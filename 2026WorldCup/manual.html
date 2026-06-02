@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LP制作マニュアル | FIFA ワールドカップ 2026</title>
+  <style>
+    :root {
+      --gold:  #FFD700;
+      --red:   #C8102E;
+      --blue:  #003F88;
+      --dark:  #0D0D1A;
+      --mid:   #161628;
+      --card:  #1C1C35;
+      --border: rgba(255,255,255,0.08);
+      --text:  rgba(255,255,255,0.85);
+      --muted: rgba(255,255,255,0.5);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    /* ── SIDEBAR + MAIN ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    aside {
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      background: var(--mid);
+      border-right: 1px solid var(--border);
+      padding: 32px 20px;
+    }
+    .sidebar-logo {
+      font-size: 0.75rem; font-weight: 900; letter-spacing: 3px;
+      color: var(--gold); text-transform: uppercase;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .sidebar-title {
+      font-size: 0.85rem; font-weight: 700; color: #fff;
+      margin-bottom: 16px; line-height: 1.4;
+    }
+    nav ul { list-style: none; }
+    nav ul li { margin-bottom: 4px; }
+    nav ul li a {
+      display: block; padding: 7px 12px; border-radius: 8px;
+      font-size: 0.8rem; color: var(--muted); text-decoration: none;
+      transition: all .15s;
+    }
+    nav ul li a:hover,
+    nav ul li a.active {
+      background: rgba(255,215,0,0.08);
+      color: var(--gold);
+    }
+    nav ul li.sub a { padding-left: 24px; font-size: 0.75rem; }
+    .sidebar-meta {
+      margin-top: 24px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.72rem; color: var(--muted); line-height: 1.9;
+    }
+
+    /* ── MAIN ── */
+    main {
+      padding: 56px 64px;
+      max-width: 900px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      margin-bottom: 56px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-tag {
+      font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); font-weight: 700;
+      display: inline-block; margin-bottom: 12px;
+    }
+    .page-title {
+      font-size: 2.4rem; font-weight: 900; line-height: 1.15;
+      background: linear-gradient(135deg, #fff 40%, var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+    .page-desc { font-size: 0.9rem; color: var(--muted); }
+
+    /* ── SECTION ── */
+    .doc-section { margin-bottom: 64px; }
+    .doc-section:target { scroll-margin-top: 24px; }
+
+    h2 {
+      font-size: 1.4rem; font-weight: 800;
+      color: #fff; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    h2 .h2-num {
+      font-size: 0.7rem; letter-spacing: 2px; font-weight: 700;
+      color: var(--gold); background: rgba(255,215,0,0.1);
+      border: 1px solid rgba(255,215,0,0.25);
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    h3 {
+      font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.9);
+      margin: 28px 0 12px;
+      padding-left: 12px;
+      border-left: 3px solid var(--gold);
+    }
+
+    p { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    thead tr { background: rgba(255,215,0,0.06); }
+    th {
+      text-align: left; padding: 12px 16px;
+      font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--gold); font-weight: 700;
+      border-bottom: 1px solid rgba(255,215,0,0.2);
+    }
+    td {
+      padding: 11px 16px; color: var(--text);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    td a { color: var(--gold); text-decoration: none; font-size: 0.78rem; word-break: break-all; }
+    td a:hover { text-decoration: underline; }
+
+    /* ── CODE ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.8rem;
+      background: rgba(255,215,0,0.08);
+      color: var(--gold);
+      padding: 2px 7px; border-radius: 5px;
+    }
+    pre {
+      background: #0A0A14;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      overflow-x: auto;
+      margin: 16px 0 20px;
+    }
+    pre code {
+      background: none; padding: 0;
+      font-size: 0.82rem; color: #a8d8ea;
+      line-height: 1.7;
+    }
+
+    /* ── BLOCKQUOTE ── */
+    blockquote {
+      border-left: 3px solid rgba(255,215,0,0.4);
+      padding: 12px 20px;
+      background: rgba(255,215,0,0.04);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem; color: var(--muted);
+      margin: 16px 0;
+    }
+
+    /* ── UL / OL ── */
+    ul, ol {
+      padding-left: 20px; margin-bottom: 16px;
+    }
+    li {
+      font-size: 0.88rem; color: var(--muted);
+      margin-bottom: 6px; line-height: 1.7;
+    }
+    li code { font-size: 0.78rem; }
+
+    /* ── COLOR SWATCHES ── */
+    .swatch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px; margin: 16px 0;
+    }
+    .swatch {
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .swatch-color { height: 48px; }
+    .swatch-info { padding: 10px 12px; background: var(--card); }
+    .swatch-var { font-size: 0.72rem; color: var(--gold); font-family: monospace; }
+    .swatch-hex { font-size: 0.78rem; color: #fff; font-weight: 600; }
+    .swatch-use { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── CUSTOMIZE CARDS ── */
+    .custom-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;
+    }
+    .custom-card {
+      padding: 18px 20px; border-radius: 12px;
+      background: var(--card); border: 1px solid var(--border);
+    }
+    .custom-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
+    .custom-card p  { font-size: 0.78rem; color: var(--muted); margin: 0; }
+
+    /* ── HR ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { display: none; }
+      main  { padding: 32px 24px; }
+      .custom-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-logo">⚽ WC 2026</div>
+    <div class="sidebar-title">LP 制作マニュアル</div>
+    <nav>
+      <ul>
+        <li><a href="#overview">1. 概要</a></li>
+        <li><a href="#sources">2. 参考情報・出典</a></li>
+        <li><a href="#data">3. 大会データ</a></li>
+        <li><a href="#sections">4. セクション構成</a></li>
+        <li class="sub"><a href="#s-nav">4-1. ナビゲーション</a></li>
+        <li class="sub"><a href="#s-hero">4-2. Hero</a></li>
+        <li class="sub"><a href="#s-stats">4-3. Stats</a></li>
+        <li class="sub"><a href="#s-format">4-4. Format</a></li>
+        <li class="sub"><a href="#s-cities">4-5. Cities</a></li>
+        <li class="sub"><a href="#s-schedule">4-6. Schedule</a></li>
+        <li class="sub"><a href="#s-japan">4-7. Japan</a></li>
+        <li class="sub"><a href="#s-players">4-8. Players ★</a></li>
+        <li class="sub"><a href="#s-cta">4-9. CTA</a></li>
+        <li class="sub"><a href="#s-sticky">4-10. Sticky CTA ★</a></li>
+        <li><a href="#design">5. デザインシステム</a></li>
+        <li><a href="#js">6. JavaScript実装</a></li>
+        <li><a href="#responsive">7. レスポンシブ</a></li>
+        <li><a href="#custom">8. カスタマイズ</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-meta">
+      制作日: 2026年6月1日<br>
+      最終更新: 2026年6月1日<br>
+      技術: HTML5 / CSS3 / JS<br>
+      ファイル: worldcup2026_lp.html
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="page-header">
+      <span class="page-tag">Documentation</span>
+      <h1 class="page-title">FIFA ワールドカップ 2026<br>LP 制作マニュアル</h1>
+      <p class="page-desc">LPの実装内容・使用技術・参考情報をまとめたドキュメント</p>
+    </div>
+
+    <!-- 1. 概要 -->
+    <div class="doc-section" id="overview">
+      <h2><span class="h2-num">01</span> 概要</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>項目</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>ファイル名</td><td><code>worldcup2026_lp.html</code></td></tr>
+            <tr><td>格納場所</td><td><code>/Desktop/soccer/2026WorldCup/</code></td></tr>
+            <tr><td>制作日</td><td>2026年6月1日</td></tr>
+            <tr><td>最終更新</td><td>2026年6月1日（選手セクション・追従CTA追加）</td></tr>
+            <tr><td>技術スタック</td><td>HTML5 / CSS3 / Vanilla JavaScript（外部ライブラリなし）</td></tr>
+            <tr><td>対応デバイス</td><td>PC・スマートフォン（レスポンシブ対応）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- 2. 参考情報 -->
+    <div class="doc-section" id="sources">
+      <h2><span class="h2-num">02</span> 参考情報・出典</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>情報源</th><th>URL</th><th>取得内容</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>FIFA 公式（日本語）</td>
+              <td><a href="https://www.fifa.com/ja/tournaments/mens/worldcup/canadamexicousa2026/articles/fifa-world-cup-2026-hosts-cities-dates-usa-mexico-canada-ja" target="_blank">fifa.com/ja/...</a></td>
+              <td>大会概要・開催都市・日程</td>
+            </tr>
+            <tr>
+              <td>FIFA 公式（英語）</td>
+              <td><a href="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026" target="_blank">fifa.com/en/...</a></td>
+              <td>フォーマット・都市・スケジュール</td>
+            </tr>
+            <tr>
+              <td>Wikipedia（日本語）</td>
+              <td><a href="https://ja.wikipedia.org/wiki/2026_FIFA%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%AB%E3%83%83%E3%83%97" target="_blank">wikipedia.org/...</a></td>
+              <td>大会詳細・参加国数・試合数</td>
+            </tr>
+            <tr>
+              <td>Goal.com 日本</td>
+              <td><a href="https://www.goal.com/jp/リスト/canada-mexico-usa-world-cup-2026-information/blt6c7b867a121500ab" target="_blank">goal.com/jp/...</a></td>
+              <td>開幕日・キックオフ・出場国情報</td>
+            </tr>
+          </tbody>
+        </table>
+            <tr>
+              <td>Wikimedia Commons</td>
+              <td><a href="https://commons.wikimedia.org/" target="_blank">commons.wikimedia.org</a></td>
+              <td>選手画像（CC ライセンス）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <blockquote>
+        <strong>備考：</strong> FIFA 公式サイトは JavaScript による動的レンダリングのため <code>WebFetch</code> での直接取得ができなかった。<code>WebSearch</code> で情報を収集し補完した。<br>
+        Wikimedia Commons の画像はホットリンク不可のため、<code>python3 urllib</code> でローカルダウンロードして <code>images/</code> フォルダに格納した。
+      </blockquote>
+    </div>
+
+    <hr>
+
+    <!-- 3. 大会データ -->
+    <div class="doc-section" id="data">
+      <h2><span class="h2-num">03</span> LP に反映した大会データ</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>データ項目</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>開催国</td><td>アメリカ（主）・メキシコ・カナダ（3カ国共同開催・史上初）</td></tr>
+            <tr><td>開催期間</td><td>2026年6月11日 〜 7月19日（39日間）</td></tr>
+            <tr><td>参加チーム数</td><td>48カ国（従来32から拡大・史上最多）</td></tr>
+            <tr><td>総試合数</td><td>104試合（グループ72 + 決勝T 32）</td></tr>
+            <tr><td>開催都市数</td><td>16都市（USA 11 / Mexico 3 / Canada 2）</td></tr>
+            <tr><td>グループ数</td><td>12グループ × 4チーム</td></tr>
+            <tr><td>決勝T進出</td><td>各グループ上位2チーム + 3位グループ上位8チーム = 32チーム</td></tr>
+            <tr><td>開幕戦会場</td><td>エスタディオ・アステカ（メキシコシティ）</td></tr>
+            <tr><td>決勝会場</td><td>メトライフ・スタジアム（ニューヨーク / ニュージャージー）</td></tr>
+            <tr><td>ドロー開催</td><td>2025年12月5日、ケネディ・センター（ワシントンD.C.）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- 4. セクション構成 -->
+    <div class="doc-section" id="sections">
+      <h2><span class="h2-num">04</span> LP セクション構成と実装内容</h2>
+
+      <h3 id="s-nav">4-1. ナビゲーション（固定ヘッダー）</h3>
+      <ul>
+        <li><code>position: fixed</code> で画面上部に固定</li>
+        <li><code>backdrop-filter: blur</code> でスクロール時の透過エフェクト</li>
+        <li>各セクションへのアンカーリンク</li>
+        <li>スマートフォン時は非表示（<code>display: none</code>）</li>
+      </ul>
+
+      <h3 id="s-hero">4-2. Hero セクション</h3>
+      <p><strong>目的：</strong>ファーストビューで大会の規模感とワクワク感を伝える</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>実装要素</th><th>詳細</th></tr></thead>
+          <tbody>
+            <tr><td>背景グラデーション</td><td><code>radial-gradient</code> 2層 + <code>linear-gradient</code> でW杯カラー（青・赤）を演出</td></tr>
+            <tr><td>ピッチグリッド</td><td><code>repeating-linear-gradient</code> でサッカーピッチの芝目を再現（opacity 5%）</td></tr>
+            <tr><td>カウントダウンタイマー</td><td>JavaScript <code>setInterval</code> で1秒毎に更新。開幕日まで残り日・時・分・秒を表示</td></tr>
+            <tr><td>開幕後の処理</td><td><code>diff &lt;= 0</code> 判定で「⚽ 開幕！」テキストに自動切り替え</td></tr>
+            <tr><td>フェードインアニメーション</td><td><code>@keyframes fadeUp</code> + <code>animation-delay</code> で要素を順番に表示</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s-stats">4-3. Stats バンド</h3>
+      <p><strong>目的：</strong>4つの数字で大会の規模を瞬時に伝える</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>表示内容</th><th>数値</th></tr></thead>
+          <tbody>
+            <tr><td>参加国数</td><td>48カ国</td></tr>
+            <tr><td>総試合数</td><td>104試合</td></tr>
+            <tr><td>開催都市数</td><td>16都市</td></tr>
+            <tr><td>共同開催国数</td><td>3カ国</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>背景に <code>linear-gradient</code>（赤→青）でW杯カラー帯</li>
+        <li>グリッドの区切り線は <code>rgba(255,255,255,0.15)</code> で1pxライン</li>
+        <li>ホバーで背景色が暗くなるインタラクション</li>
+      </ul>
+
+      <h3 id="s-format">4-4. Format セクション</h3>
+      <p><strong>目的：</strong>新フォーマット（48チーム・ラウンド32）を分かりやすく説明</p>
+      <ul>
+        <li>左: 3ステップのフロー（グループステージ → ラウンド32 → 決勝）</li>
+        <li>右: 数字カード6枚（グループ数・1グループ人数・グループ戦試合数・決勝T試合数・優勝までの試合数）</li>
+        <li><code>fv-card.accent</code> でワイドカードを実装（<code>grid-column: 1 / -1</code>）</li>
+      </ul>
+
+      <h3 id="s-cities">4-5. Cities セクション</h3>
+      <p><strong>目的：</strong>16開催都市を3カ国に色分けして一覧表示</p>
+      <ul>
+        <li>国別カード3枚（USA / Mexico / Canada）に都市数・試合数を掲載</li>
+        <li>16都市タグを <code>auto-fill</code> グリッドで可変列表示</li>
+        <li>開幕戦・決勝会場はバッジ（<code>city-games</code>）でハイライト</li>
+      </ul>
+
+      <h3 id="s-schedule">4-6. Schedule セクション</h3>
+      <p><strong>目的：</strong>大会の流れをタイムラインで視覚化</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>マイルストーン</th><th>日付</th><th>バッジカラー</th></tr></thead>
+          <tbody>
+            <tr><td>開幕戦</td><td>2026/6/11</td><td>ゴールド</td></tr>
+            <tr><td>グループステージ</td><td>6/11〜6/27</td><td>ブルー</td></tr>
+            <tr><td>決勝トーナメント</td><td>6月下旬〜7月上旬</td><td>レッド</td></tr>
+            <tr><td>決勝</td><td>2026/7/19</td><td>グラデーション（ゴールド）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>縦ライン: <code>::before</code> 疑似要素 + <code>linear-gradient</code>（金→青→金）</li>
+        <li>ドット: <code>position: absolute</code> + <code>box-shadow</code> でグロー効果</li>
+      </ul>
+
+      <h3 id="s-japan">4-7. Japan セクション</h3>
+      <p><strong>目的：</strong>日本人ユーザーへの感情訴求・日本代表の情報提供</p>
+      <ul>
+        <li>中央の円形バッジに <code>@keyframes pulse</code> でアニメーション（box-shadow の拡縮）</li>
+        <li>アジア枠の拡大（8.5カ国）・出場決定・ベスト8目標を明記</li>
+      </ul>
+
+      <h3 id="s-players">4-8. Players セクション（注目選手）<span style="color:var(--gold);font-size:0.7rem;margin-left:8px;">★追加</span></h3>
+      <p><strong>目的：</strong>世界のスター選手を画像とセットで紹介し、滞在時間を伸ばす</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>選手名</th><th>国</th><th>ポジション</th><th>画像ファイル</th></tr></thead>
+          <tbody>
+            <tr><td>キリアン・ムバッペ</td><td>🇫🇷 フランス</td><td>FW</td><td><code>images/mbappe.jpg</code></td></tr>
+            <tr><td>ヴィニシウス Jr.</td><td>🇧🇷 ブラジル</td><td>FW</td><td><code>images/vinicius.jpg</code></td></tr>
+            <tr><td>ジュード・ベリンガム</td><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 イングランド</td><td>MF</td><td><code>images/bellingham.jpg</code></td></tr>
+            <tr><td>リオネル・メッシ</td><td>🇦🇷 アルゼンチン</td><td>FW</td><td><code>images/messi.jpg</code></td></tr>
+            <tr><td>C・ロナウド</td><td>🇵🇹 ポルトガル</td><td>FW</td><td><code>images/ronaldo.jpg</code></td></tr>
+            <tr><td>ラミン・ヤマル</td><td>🇪🇸 スペイン</td><td>FW</td><td><code>images/yamal.jpg</code></td></tr>
+            <tr><td>A・ハーランド</td><td>🇳🇴 ノルウェー</td><td>FW</td><td><code>images/haaland.jpg</code></td></tr>
+            <tr><td>久保 建英</td><td>🇯🇵 日本</td><td>MF</td><td><code>images/kubo.png</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="border-color:rgba(255,255,255,0.2);">カード実装の詳細</h3>
+      <ul>
+        <li><code>aspect-ratio: 3 / 4</code> で縦長カードを統一。<code>object-fit: cover; object-position: top center</code> で顔を切り抜かず表示</li>
+        <li><code>player-img-overlay</code>: 下部に <code>linear-gradient</code> を重ねてテキスト可読性を確保</li>
+        <li>左上: 国旗バッジ（<code>backdrop-filter: blur</code> で半透明）／右上: ポジションバッジ（FW / MF）</li>
+        <li>ホバー: カードが <code>translateY(-8px)</code> で浮き上がり、写真が <code>scale(1.06)</code> で拡大</li>
+      </ul>
+      <h3 style="border-color:rgba(255,255,255,0.2);">画像の取得方法</h3>
+      <p>Wikimedia Commons はホットリンクを禁止しているため、<code>python3 urllib</code> でローカルダウンロードし <code>images/</code> に保存した。</p>
+      <blockquote>
+        <strong>注意：</strong> Wikimedia の許可サムネイルサイズは <code>20 / 40 / 60 / 120 / 250 / 330 / 500 / 960 / 1280 / 1920 / 3840 px</code> のみ。<code>400px</code> などは HTTP 400 エラーになる。本 LP では <code>500px</code> を使用。
+      </blockquote>
+
+      <h3 id="s-cta">4-9. CTA セクション</h3>
+      <p><strong>目的：</strong>FIFA公式サイトへの誘導</p>
+      <ul>
+        <li>背景に巨大な ⚽ 絵文字（<code>opacity: 0.03</code>）でテクスチャ感</li>
+        <li>プライマリボタン: ゴールド背景 + <code>box-shadow</code> グロー</li>
+        <li>セカンダリボタン: アウトライン</li>
+      </ul>
+
+      <h3 id="s-sticky">4-10. Sticky CTA（追従ボタン）<span style="color:var(--gold);font-size:0.7rem;margin-left:8px;">★追加</span></h3>
+      <p><strong>目的：</strong>どのセクションを閲覧中でも FIFA 公式サイトへ誘導できるようにする</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>項目</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>表示タイミング</td><td>Hero セクションをスクロールで抜けた瞬間</td></tr>
+            <tr><td>非表示タイミング</td><td>CTA セクションが画面内に入ったとき（重複防止）</td></tr>
+            <tr><td>位置</td><td>画面右下固定（スマホは画面下部横幅いっぱい）</td></tr>
+            <tr><td>遷移先</td><td>FIFA 公式記事 URL</td></tr>
+            <tr><td>ボタン文言</td><td>⚽ 詳細はこちら</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre><code>const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.target === hero)   cta.classList.toggle('show', !e.isIntersecting);
+    if (e.target === ctaSec) cta.classList.toggle('show', !e.isIntersecting);
+  });
+}, { threshold: 0.2 });
+obs.observe(hero);
+obs.observe(ctaSec);</code></pre>
+    </div>
+
+    <hr>
+
+    <!-- 5. デザインシステム -->
+    <div class="doc-section" id="design">
+      <h2><span class="h2-num">05</span> デザインシステム</h2>
+
+      <h3>カラーパレット</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FFD700;"></div>
+          <div class="swatch-info">
+            <div class="swatch-var">--gold</div>
+            <div class="swatch-hex">#FFD700</div>
+            <div class="swatch-use">強調・タイトル・ボタン</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#C8102E;"></div>
+          <div class="swatch-info">
+            <div class="swatch-var">--red</div>
+            <div class="swatch-hex">#C8102E</div>
+            <div class="swatch-use">アクセント（W杯レッド）</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#1A6FD4;"></div>
+          <div class="swatch-info">
+            <div class="swatch-var">--blue</div>
+            <div class="swatch-hex">#1A6FD4</div>
+            <div class="swatch-use">アクセント（W杯ブルー）</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0A0A0F;border:1px solid #333;"></div>
+          <div class="swatch-info">
+            <div class="swatch-var">--dark</div>
+            <div class="swatch-hex">#0A0A0F</div>
+            <div class="swatch-use">メイン背景</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#12122A;border:1px solid #333;"></div>
+          <div class="swatch-info">
+            <div class="swatch-var">--mid</div>
+            <div class="swatch-hex">#12122A</div>
+            <div class="swatch-use">サブ背景</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#00D4FF;"></div>
+          <div class="swatch-info">
+            <div class="swatch-var">--accent</div>
+            <div class="swatch-hex">#00D4FF</div>
+            <div class="swatch-use">補助アクセント</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>タイポグラフィ</h3>
+      <ul>
+        <li>フォント: <code>Helvetica Neue</code>, <code>Arial</code>, <code>Hiragino Kaku Gothic ProN</code>（日本語対応）</li>
+        <li>ヒーロー見出し: <code>clamp(3rem, 9vw, 8rem)</code> でビューポートに応じて可変</li>
+        <li>グラデーションテキスト: <code>-webkit-background-clip: text</code> で実装</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- 6. JavaScript -->
+    <div class="doc-section" id="js">
+      <h2><span class="h2-num">06</span> JavaScript 実装</h2>
+
+      <h3>カウントダウンタイマー</h3>
+      <pre><code>const target = new Date('2026-06-11T00:00:00');
+setInterval(() => {
+  const diff = target - new Date();
+  if (diff &lt;= 0) {
+    // 開幕後は「⚽ 開幕！」に切り替え
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  // DOM に反映
+}, 1000);</code></pre>
+
+      <h3>スクロールリビール</h3>
+      <pre><code>const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      obs.unobserve(e.target); // パフォーマンス最適化
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));</code></pre>
+      <ul>
+        <li><code>IntersectionObserver</code> でビューポートに入った要素に <code>.visible</code> を付与</li>
+        <li>CSS側で <code>.reveal</code> → <code>.reveal.visible</code> のトランジションを定義</li>
+        <li><code>obs.unobserve()</code> でアニメーション後は監視を解除（パフォーマンス最適化）</li>
+      </ul>
+
+      <h3>Sticky CTA（追従ボタン）</h3>
+      <pre><code>const cta    = document.getElementById('stickyCta');
+const hero   = document.getElementById('hero');
+const ctaSec = document.getElementById('cta');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.target === hero)   cta.classList.toggle('show', !e.isIntersecting);
+    if (e.target === ctaSec) cta.classList.toggle('show', !e.isIntersecting);
+  });
+}, { threshold: 0.2 });
+obs.observe(hero);
+obs.observe(ctaSec);</code></pre>
+      <ul>
+        <li>Hero と CTA の2セクションを同時に監視することで、表示/非表示を自動制御</li>
+        <li><code>classList.toggle('show', !e.isIntersecting)</code> — 画面外なら表示、画面内なら非表示</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- 7. レスポンシブ -->
+    <div class="doc-section" id="responsive">
+      <h2><span class="h2-num">07</span> レスポンシブ対応</h2>
+      <p><code>@media (max-width: 768px)</code> で以下を調整：</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>対象</th><th>PC</th><th>スマートフォン</th></tr></thead>
+          <tbody>
+            <tr><td>ナビリンク</td><td>表示</td><td>非表示</td></tr>
+            <tr><td>Stats グリッド</td><td>4列</td><td>2列</td></tr>
+            <tr><td>Format / Japan / Cities</td><td>2列</td><td>1列</td></tr>
+            <tr><td>Hero タイトル</td><td><code>clamp</code> で最大8rem</td><td><code>clamp</code> で最小3rem</td></tr>
+            <tr><td>Players グリッド</td><td>4列</td><td>2列</td></tr>
+            <tr><td>Sticky CTA</td><td>右下固定</td><td>画面下部横幅いっぱい</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- 8. カスタマイズ -->
+    <div class="doc-section" id="custom">
+      <h2><span class="h2-num">08</span> 今後のカスタマイズポイント</h2>
+      <div class="custom-grid">
+        <div class="custom-card">
+          <h4>試合日程の詳細追加</h4>
+          <p>グループごとの対戦表を表形式で追加</p>
+        </div>
+        <div class="custom-card">
+          <h4>日本代表の試合予定</h4>
+          <p>確定次第タイムラインに追記</p>
+        </div>
+        <div class="custom-card">
+          <h4>動画背景</h4>
+          <p>Hero の <code>.hero-bg</code> を <code>&lt;video&gt;</code> タグに置換</p>
+        </div>
+        <div class="custom-card">
+          <h4>OGP対応</h4>
+          <p><code>&lt;meta property="og:..."&gt;</code> タグを追加</p>
+        </div>
+        <div class="custom-card">
+          <h4>SNSシェアボタン</h4>
+          <p>CTA セクションに Twitter/X・LINE ボタンを追加</p>
+        </div>
+        <div class="custom-card">
+          <h4>Google Analytics</h4>
+          <p><code>&lt;head&gt;</code> に GA4 タグを埋め込み</p>
+        </div>
+        <div class="custom-card">
+          <h4>選手カードの追加</h4>
+          <p><code>players-grid</code> に <code>.player-card</code> を追加し、<code>images/</code> に画像を配置するだけで拡張できる</p>
+        </div>
+        <div class="custom-card">
+          <h4>選手詳細モーダル</h4>
+          <p>カードクリックで詳細情報（出身・所属クラブ・通算ゴール等）をモーダル表示</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // サイドバーのアクティブリンクをスクロールに追従
+  const sections = document.querySelectorAll('.doc-section[id]');
+  const navLinks  = document.querySelectorAll('aside nav a');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`aside nav a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>
