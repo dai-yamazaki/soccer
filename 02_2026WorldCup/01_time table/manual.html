@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>マニュアル｜2026 FIFA World Cup 日程管理ツール</title>
+  <style>
+    :root {
+      --primary: #1a3a6c;
+      --accent:  #c8102e;
+      --gold:    #f0b429;
+      --bg:      #f0f2f8;
+      --card:    #ffffff;
+      --border:  #d0d7e8;
+      --text:    #1a1a2e;
+      --muted:   #64748b;
+      --code-bg: #f1f5f9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* ===== LAYOUT ===== */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--primary);
+      color: white;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo {
+      padding: 24px 20px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      line-height: 1.4;
+    }
+    .sidebar-logo .logo-sub { font-size: 10px; font-weight: 400; opacity: 0.7; margin-top: 2px; }
+    .sidebar nav { padding: 12px 0; flex: 1; }
+    .nav-section { padding: 8px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.5; }
+    .nav-link {
+      display: block; padding: 7px 20px;
+      color: rgba(255,255,255,0.75); text-decoration: none;
+      font-size: 12px; border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .nav-link:hover { color: white; background: rgba(255,255,255,0.08); border-left-color: var(--gold); }
+    .nav-link.active { color: white; border-left-color: var(--gold); background: rgba(255,255,255,0.06); }
+    .sidebar-footer {
+      padding: 16px 20px;
+      font-size: 10px;
+      opacity: 0.45;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      min-width: 0;
+      padding: 40px 48px 80px;
+      max-width: 860px;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      margin-bottom: 36px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+    .page-header .tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      letter-spacing: 0.08em;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+    .page-header .lead {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .page-header .meta {
+      margin-top: 12px;
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .page-header .meta span { display: flex; align-items: center; gap: 4px; }
+
+    /* ===== SECTION ===== */
+    section { margin-bottom: 48px; }
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      margin-left: 8px;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 20px 0 8px;
+    }
+    p { margin-bottom: 10px; color: #374151; }
+    ul, ol { padding-left: 20px; margin-bottom: 10px; color: #374151; }
+    li { margin-bottom: 4px; }
+
+    /* ===== FILE CARD ===== */
+    .file-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .file-card-header {
+      background: var(--primary);
+      color: white;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .file-card-header.red-header { background: var(--accent); }
+    .file-card-header.gold-header { background: linear-gradient(90deg, #92400e, #b45309); }
+    .file-card-header.green-header { background: #1e6e3a; }
+
+    .fch-icon { font-size: 22px; }
+    .fch-info .fch-name { font-size: 15px; font-weight: 800; }
+    .fch-info .fch-file { font-size: 11px; opacity: 0.8; margin-top: 2px; font-family: monospace; }
+    .file-card-body { padding: 20px; }
+    .file-card-body p { margin-bottom: 8px; }
+
+    /* ===== FEATURE LIST ===== */
+    .feature-list { list-style: none; padding: 0; }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      color: #374151;
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-list .fi-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .feature-list .fi-body .fi-title { font-weight: 700; color: var(--text); }
+    .feature-list .fi-body .fi-desc  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ===== BADGE ===== */
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      vertical-align: middle;
+    }
+    .badge-primary { background: #dbeafe; color: #1d4ed8; }
+    .badge-red     { background: #fee2e2; color: #b91c1c; }
+    .badge-gold    { background: #fef3c7; color: #92400e; }
+    .badge-green   { background: #dcfce7; color: #166534; }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+
+    /* ===== TABLE ===== */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px; }
+    th { background: #f0f4fb; color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 9px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8f9ff; }
+    code { background: var(--code-bg); border: 1px solid #e2e8f0; border-radius: 4px; padding: 1px 6px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: var(--accent); }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .callout-info   { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+    .callout-warn   { background: #fffbeb; border-left: 4px solid var(--gold); color: #92400e; }
+    .callout-tip    { background: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; }
+    .callout-danger { background: #fff1f2; border-left: 4px solid var(--accent); color: #9f1239; }
+    .callout-icon   { font-size: 16px; flex-shrink: 0; }
+
+    /* ===== STEPS ===== */
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+    }
+    .steps li:last-child { border-bottom: none; }
+    .steps li::before {
+      content: counter(step);
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ===== COLOR SWATCH ===== */
+    .swatch-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .swatch {
+      display: flex; align-items: center; gap: 6px;
+      background: white; border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px;
+      font-size: 11px;
+    }
+    .swatch-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ===== TIMEZONE TABLE ===== */
+    .tz-note { background: var(--code-bg); border-radius: 8px; padding: 12px 16px; font-size: 12px; margin-bottom: 10px; }
+    .tz-note code { font-size: 13px; }
+
+    /* ===== NAV TABS preview ===== */
+    .tab-preview {
+      background: #0d2547;
+      display: flex;
+      gap: 4px;
+      padding: 0 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .tab-preview a {
+      display: inline-block;
+      padding: 8px 20px;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      text-decoration: none;
+    }
+    .tab-preview a.active { color: white; border-bottom-color: #f0b429; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .content { padding: 24px 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    ⚽ 2026 FIFA World Cup<br>
+    <span class="logo-sub">日程管理ツール マニュアル</span>
+  </div>
+  <nav>
+    <div class="nav-section">概要</div>
+    <a class="nav-link" href="#overview">プロジェクト概要</a>
+    <a class="nav-link" href="#files">ファイル構成</a>
+
+    <div class="nav-section">各ファイル</div>
+    <a class="nav-link" href="#schedule">📋 日程表</a>
+    <a class="nav-link" href="#calendar">📅 カレンダー</a>
+    <a class="nav-link" href="#bracket">🏆 トーナメント表</a>
+
+    <div class="nav-section">データ・仕様</div>
+    <a class="nav-link" href="#timezone">時刻変換ルール</a>
+    <a class="nav-link" href="#groups">グループ・出場国</a>
+    <a class="nav-link" href="#japan">日本代表の道</a>
+    <a class="nav-link" href="#featured">注目国</a>
+    <a class="nav-link" href="#update">更新方法</a>
+    <a class="nav-link" href="#sources">データソース</a>
+  </nav>
+  <div class="sidebar-footer">作成日：2026年6月8日<br>Claude Code (Sonnet 4.6) による自動生成</div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="content">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="tag">MANUAL v1.0</div>
+    <h1>2026 FIFA World Cup<br>日程管理ツール マニュアル</h1>
+    <p class="lead">グループステージ全72試合とノックアウトステージを日本時間（JST）で確認できる3点セットHTMLツールの仕様・操作説明書。</p>
+    <div class="meta">
+      <span>📅 作成日：2026年6月8日</span>
+      <span>📁 場所：<code>01_time table/</code></span>
+      <span>🌐 ブラウザで直接開いて使用</span>
+    </div>
+  </div>
+
+  <!-- ========== OVERVIEW ========== -->
+  <section id="overview">
+    <div class="section-title">🌍 プロジェクト概要</div>
+    <p>
+      2026 FIFA World Cup（2026年6月12日〜7月20日、米国・カナダ・メキシコ共催）の全試合日程を
+      <strong>日本時間（JST, UTC+9）</strong>で把握するためのHTMLツールセット。
+      ブラウザで開くだけで使えるスタンドアロンファイル群。
+    </p>
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <div>大会フォーマットは史上初の<strong>48チーム・104試合</strong>。12グループ（A〜L）×4チームでグループステージを戦い、各組上位2チーム＋各組3位のうち成績上位8チームの計32チームがラウンド32（決勝トーナメント1回戦）へ進出。</div>
+    </div>
+
+    <table>
+      <thead><tr><th>項目</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>大会期間</td><td>2026年6月12日(金)〜7月20日(月)（日本時間）</td></tr>
+        <tr><td>開催国</td><td>アメリカ・カナダ・メキシコ（16都市・16スタジアム）</td></tr>
+        <tr><td>出場国数</td><td>48チーム（グループA〜L、各4チーム）</td></tr>
+        <tr><td>総試合数</td><td>104試合（グループ72＋ノックアウト32）</td></tr>
+        <tr><td>日本代表</td><td>グループF（オランダ・スウェーデン・チュニジアと同組）</td></tr>
+        <tr><td>決勝会場</td><td>MetLife Stadium（ニュージャージー州イーストラザフォード）</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ========== FILES ========== -->
+  <section id="files">
+    <div class="section-title">📁 ファイル構成</div>
+
+    <table>
+      <thead><tr><th>ファイル名</th><th>役割</th><th>主な内容</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>schedule.html</code></td>
+          <td><span class="badge badge-primary">日程表</span></td>
+          <td>グループA〜L 全72試合をグループ別一覧で表示</td>
+        </tr>
+        <tr>
+          <td><code>calendar.html</code></td>
+          <td><span class="badge badge-green">カレンダー</span></td>
+          <td>6月・7月の月間カレンダー形式で試合日を視覚表示</td>
+        </tr>
+        <tr>
+          <td><code>bracket.html</code></td>
+          <td><span class="badge badge-gold">トーナメント表</span></td>
+          <td>ラウンド32〜決勝のトーナメント表（試合時刻・対戦カード付き）</td>
+        </tr>
+        <tr>
+          <td><code>manual.html</code></td>
+          <td><span class="badge badge-gray">本書</span></td>
+          <td>操作説明・データ仕様・更新方法</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <div>3ファイルはタブナビゲーションで相互リンクされています。どのファイルを開いても「📋 日程表 ／ 📅 カレンダー ／ 🏆 トーナメント表」のタブから切り替え可能。</div>
+    </div>
+
+    <div class="tab-preview">
+      <a href="schedule.html">📋 日程表</a>
+      <a href="calendar.html">📅 カレンダー</a>
+      <a href="bracket.html" class="active">🏆 トーナメント表</a>
+    </div>
+  </section>
+
+  <!-- ========== SCHEDULE ========== -->
+  <section id="schedule">
+    <div class="section-title">📋 日程表（schedule.html）</div>
+
+    <div class="file-card">
+      <div class="file-card-header">
+        <span class="fch-icon">📋</span>
+        <div class="fch-info">
+          <div class="fch-name">グループステージ 全試合日程</div>
+          <div class="fch-file">schedule.html</div>
+        </div>
+      </div>
+      <div class="file-card-body">
+        <p>グループA〜Lの全72試合を縦長テーブルで一覧表示。最もデータが充実したマスターファイル。</p>
+        <ul class="feature-list">
+          <li>
+            <span class="fi-icon">🏆</span>
+            <div class="fi-body">
+              <div class="fi-title">日本代表ハイライト（ページ上部）</div>
+              <div class="fi-desc">赤背景の専用ゾーンに3試合（オランダ戦・チュニジア戦・スウェーデン戦）を大きく表示</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🏅</span>
+            <div class="fi-body">
+              <div class="fi-title">ノックアウトステージ日程（概要）</div>
+              <div class="fi-desc">R32〜決勝の日程レンジを6枚のカードで表示</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🔵</span>
+            <div class="fi-body">
+              <div class="fi-title">グループ別カード（A〜L）</div>
+              <div class="fi-desc">グループヘッダー（出場4チーム名）＋節バッジ（MD1/MD2/MD3）＋対戦カード＋会場</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🏳️</span>
+            <div class="fi-body">
+              <div class="fi-title">国旗絵文字の自動挿入</div>
+              <div class="fi-desc">JavaScriptで48チーム全ての国旗を自動付与（例：🇯🇵 日本 vs 🇳🇱 オランダ）</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">❤️</span>
+            <div class="fi-body">
+              <div class="fi-title">日本代表戦の行ハイライト</div>
+              <div class="fi-desc">グループFカード内で日本が絡む3行を薄い赤背景で強調表示</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CALENDAR ========== -->
+  <section id="calendar">
+    <div class="section-title">📅 カレンダー（calendar.html）</div>
+
+    <div class="file-card">
+      <div class="file-card-header red-header">
+        <span class="fch-icon">📅</span>
+        <div class="fch-info">
+          <div class="fch-name">月間カレンダービュー</div>
+          <div class="fch-file">calendar.html</div>
+        </div>
+      </div>
+      <div class="file-card-body">
+        <p>2026年6月・7月の月間カレンダー形式で、いつどんな試合があるかを視覚的に把握できるファイル。</p>
+        <ul class="feature-list">
+          <li>
+            <span class="fi-icon">📆</span>
+            <div class="fi-body">
+              <div class="fi-title">月間グリッド（6月・7月）</div>
+              <div class="fi-desc">日〜土の7列グリッド。試合のある日はマスが自動で拡張</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🎨</span>
+            <div class="fi-body">
+              <div class="fi-title">グループ別カラーコーディング（A〜L）</div>
+              <div class="fi-desc">各グループに固有の色を割り当て。各試合チップの左ボーダーとバッジで識別</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">⭐</span>
+            <div class="fi-body">
+              <div class="fi-title">日本代表戦マーク（赤 ★）</div>
+              <div class="fi-desc">日本戦は赤背景＋赤い★マーク付きチップで強調</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">⭐</span>
+            <div class="fi-body">
+              <div class="fi-title">注目6か国マーク（金 ★）</div>
+              <div class="fi-desc">イングランド・スペイン・フランス・ブラジル・アルゼンチン・ポルトガルが絡む試合は金色★＋薄い金背景</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🗓️</span>
+            <div class="fi-body">
+              <div class="fi-title">ノックアウトステージのブロック表示</div>
+              <div class="fi-desc">R32/R16/QF/SF/決勝の対象日にカラーバナーを表示（チーム名はTBD）</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">💬</span>
+            <div class="fi-body">
+              <div class="fi-title">ホバーツールチップ</div>
+              <div class="fi-desc">試合チップにカーソルを当てると対戦カード詳細（チーム名・グループ）を表示</div>
+            </div>
+          </li>
+        </ul>
+
+        <h3>グループカラー一覧</h3>
+        <div class="swatch-row">
+          <div class="swatch"><div class="swatch-dot" style="background:#f97316;"></div>グループA</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#3b82f6;"></div>グループB</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#16a34a;"></div>グループC</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#9333ea;"></div>グループD</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#dc2626;"></div>グループE</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#bc002d;"></div>グループF</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#0891b2;"></div>グループG</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#d97706;"></div>グループH</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#4f46e5;"></div>グループI</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#0284c7;"></div>グループJ</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#65a30d;"></div>グループK</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#db2777;"></div>グループL</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== BRACKET ========== -->
+  <section id="bracket">
+    <div class="section-title">🏆 トーナメント表（bracket.html）</div>
+
+    <div class="file-card">
+      <div class="file-card-header gold-header">
+        <span class="fch-icon">🏆</span>
+        <div class="fch-info">
+          <div class="fch-name">ノックアウトステージ トーナメント表</div>
+          <div class="fch-file">bracket.html</div>
+        </div>
+      </div>
+      <div class="file-card-body">
+        <p>ラウンド32（16試合）〜準決勝〜決勝をSVGコネクター線付きブラケット形式で表示。</p>
+
+        <ul class="feature-list">
+          <li>
+            <span class="fi-icon">🔗</span>
+            <div class="fi-body">
+              <div class="fi-title">SVGコネクター線</div>
+              <div class="fi-desc">各ラウンドの試合を次ラウンドの試合に線で接続。どの試合がどこにつながるかを視覚表示</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🔢</span>
+            <div class="fi-body">
+              <div class="fi-title">試合番号（M73〜M104）</div>
+              <div class="fi-desc">FIFA公式の試合番号（グループステージM1〜M72の続き）を各ボックス左上に表示</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🕐</span>
+            <div class="fi-body">
+              <div class="fi-title">試合日時（日本時間）</div>
+              <div class="fi-desc">各ボックスに開催日・キックオフ時刻（JST）を表示</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🥇</span>
+            <div class="fi-body">
+              <div class="fi-title">グループ順位ラベル</div>
+              <div class="fi-desc">例：「F組 1位」「C組 2位」「3位 A/B/C/D/F」。順位バッジ（🟡1・🔵2・⚪3）付き</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🇯🇵</span>
+            <div class="fi-body">
+              <div class="fi-title">日本代表の進出先マーク</div>
+              <div class="fi-desc">M75（F組1位の場合）とM76（F組2位の場合）のスロットに🇯🇵マーク付き</div>
+            </div>
+          </li>
+          <li>
+            <span class="fi-icon">🥉</span>
+            <div class="fi-body">
+              <div class="fi-title">3位決定戦・決勝の別枠表示</div>
+              <div class="fi-desc">ページ下部に3位決定戦（7/19 6:00 JST）と決勝（7/20 4:00 JST）の詳細カードを配置</div>
+            </div>
+          </li>
+        </ul>
+
+        <h3>ラウンド32 対戦カード一覧（日本時間）</h3>
+        <table>
+          <thead><tr><th>試合番号</th><th>日本時間</th><th>上側</th><th>下側</th><th>会場</th></tr></thead>
+          <tbody>
+            <tr><td>M73</td><td>6/29(日) 4:00</td><td>A組2位</td><td>B組2位</td><td>イングルウッド</td></tr>
+            <tr><td>M75</td><td>6/30(月) 10:00</td><td><strong>F組1位 🇯🇵</strong></td><td>C組2位</td><td>グアダルーペ</td></tr>
+            <tr><td>M74</td><td>6/30(月) 5:30</td><td>E組1位</td><td>3位(A/B/C/D/F)</td><td>フォックスボロ</td></tr>
+            <tr><td>M77</td><td>7/1(火) 6:00</td><td>I組1位</td><td>3位(C/D/F/G/H)</td><td>イーストラザフォード</td></tr>
+            <tr><td>M83</td><td>7/3(木) 8:00</td><td>K組2位</td><td>L組2位</td><td>トロント</td></tr>
+            <tr><td>M84</td><td>7/3(木) 4:00</td><td>H組1位</td><td>J組2位</td><td>イングルウッド</td></tr>
+            <tr><td>M81</td><td>7/2(水) 9:00</td><td>D組1位</td><td>3位(B/E/F/I/J)</td><td>サンタクララ</td></tr>
+            <tr><td>M82</td><td>7/2(水) 5:00</td><td>G組1位</td><td>3位(A/E/H/I/J)</td><td>シアトル</td></tr>
+            <tr><td>M76</td><td>6/30(月) 2:00</td><td>C組1位</td><td><strong>F組2位 🇯🇵</strong></td><td>ヒューストン</td></tr>
+            <tr><td>M78</td><td>7/1(火) 2:00</td><td>E組2位</td><td>I組2位</td><td>ダラス</td></tr>
+            <tr><td>M79</td><td>7/1(火) 10:00</td><td>A組1位</td><td>3位(C/E/F/H/I)</td><td>メキシコシティ</td></tr>
+            <tr><td>M80</td><td>7/2(水) 1:00</td><td>L組1位</td><td>3位(E/H/I/J/K)</td><td>アトランタ</td></tr>
+            <tr><td>M86</td><td>7/4(金) 7:00</td><td>J組1位</td><td>H組2位</td><td>マイアミガーデンズ</td></tr>
+            <tr><td>M88</td><td>7/4(金) 3:00</td><td>D組2位</td><td>G組2位</td><td>ダラス</td></tr>
+            <tr><td>M85</td><td>7/3(木) 12:00</td><td>B組1位</td><td>3位(E/F/G/I/J)</td><td>バンクーバー</td></tr>
+            <tr><td>M87</td><td>7/4(金) 10:30</td><td>K組1位</td><td>3位(D/E/I/J/L)</td><td>カンザスシティ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TIMEZONE ========== -->
+  <section id="timezone">
+    <div class="section-title">🕐 時刻変換ルール</div>
+
+    <p>試合の現地時刻はFIFAがET（米国東部夏時間）ベースで公表しており、本ツールはすべて<strong>日本標準時（JST, UTC+9）</strong>に変換して表示しています。</p>
+
+    <div class="tz-note">
+      <strong>変換ルール（2026年6〜7月 夏時間期間中）</strong><br>
+      <code>ET（EDT, UTC-4）＋13時間 = JST</code><br>
+      <code>CT（CDT, UTC-5）＋14時間 = JST</code><br>
+      <code>PT（PDT, UTC-7）＋16時間 = JST</code><br>
+      <code>メキシコ（CST, UTC-6）＋15時間 = JST</code>（メキシコはDST廃止済み）
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <div>メキシコは2023年にDST（サマータイム）を廃止。そのためメキシコ会場（メキシコシティ・グアダルーペ）はUTC-6（CST）で固定です。</div>
+    </div>
+
+    <table>
+      <thead><tr><th>現地時刻（例：ET）</th><th>UTC</th><th>JST（翌日）</th></tr></thead>
+      <tbody>
+        <tr><td>12:00 noon ET</td><td>16:00</td><td>翌 1:00</td></tr>
+        <tr><td>3:00 PM ET</td><td>19:00</td><td>翌 4:00</td></tr>
+        <tr><td>5:00 PM ET</td><td>21:00</td><td>翌 6:00</td></tr>
+        <tr><td>7:00 PM ET</td><td>23:00</td><td>翌 8:00</td></tr>
+        <tr><td>9:00 PM ET</td><td>01:00</td><td>翌 10:00</td></tr>
+        <tr><td>11:00 PM ET</td><td>03:00</td><td>翌 12:00</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ========== GROUPS ========== -->
+  <section id="groups">
+    <div class="section-title">👥 グループ・出場国一覧</div>
+    <table>
+      <thead><tr><th>グループ</th><th>出場国（4チーム）</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge" style="background:#fff0e6;color:#c2410c;">A</span></td><td>🇲🇽 メキシコ ／ 🇿🇦 南アフリカ ／ 🇰🇷 韓国 ／ 🇨🇿 チェコ</td></tr>
+        <tr><td><span class="badge" style="background:#dbeafe;color:#1e40af;">B</span></td><td>🇨🇦 カナダ ／ 🇧🇦 ボスニア・ヘルツェゴビナ ／ 🇶🇦 カタール ／ 🇨🇭 スイス</td></tr>
+        <tr><td><span class="badge" style="background:#dcfce7;color:#166534;">C</span></td><td>🇧🇷 ブラジル ／ 🇲🇦 モロッコ ／ 🇭🇹 ハイチ ／ 🏴󠁧󠁢󠁳󠁣󠁴󠁿 スコットランド</td></tr>
+        <tr><td><span class="badge" style="background:#f3e8ff;color:#7e22ce;">D</span></td><td>🇺🇸 アメリカ ／ 🇵🇾 パラグアイ ／ 🇦🇺 オーストラリア ／ 🇹🇷 トルコ</td></tr>
+        <tr><td><span class="badge" style="background:#fee2e2;color:#991b1b;">E</span></td><td>🇩🇪 ドイツ ／ 🇨🇼 キュラソー ／ 🇨🇮 コートジボワール ／ 🇪🇨 エクアドル</td></tr>
+        <tr style="background:#fff5f5;"><td><span class="badge" style="background:#ffe4e6;color:#9f1239;">F 🇯🇵</span></td><td>🇳🇱 オランダ ／ 🇯🇵 <strong>日本</strong> ／ 🇸🇪 スウェーデン ／ 🇹🇳 チュニジア</td></tr>
+        <tr><td><span class="badge" style="background:#e0f2fe;color:#075985;">G</span></td><td>🇧🇪 ベルギー ／ 🇪🇬 エジプト ／ 🇮🇷 イラン ／ 🇳🇿 ニュージーランド</td></tr>
+        <tr><td><span class="badge" style="background:#fef3c7;color:#92400e;">H</span></td><td>🇪🇸 スペイン ／ 🇨🇻 カーボベルデ ／ 🇸🇦 サウジアラビア ／ 🇺🇾 ウルグアイ</td></tr>
+        <tr><td><span class="badge" style="background:#ede9fe;color:#4c1d95;">I</span></td><td>🇫🇷 フランス ／ 🇸🇳 セネガル ／ 🇮🇶 イラク ／ 🇳🇴 ノルウェー</td></tr>
+        <tr><td><span class="badge" style="background:#e0f2fe;color:#0c4a6e;">J</span></td><td>🇦🇷 アルゼンチン ／ 🇩🇿 アルジェリア ／ 🇦🇹 オーストリア ／ 🇯🇴 ヨルダン</td></tr>
+        <tr><td><span class="badge" style="background:#f0fdf4;color:#166534;">K</span></td><td>🇵🇹 ポルトガル ／ 🇨🇩 コンゴ民主共和国 ／ 🇺🇿 ウズベキスタン ／ 🇨🇴 コロンビア</td></tr>
+        <tr><td><span class="badge" style="background:#fdf2f8;color:#9d174d;">L</span></td><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 イングランド ／ 🇭🇷 クロアチア ／ 🇬🇭 ガーナ ／ 🇵🇦 パナマ</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ========== JAPAN ========== -->
+  <section id="japan">
+    <div class="section-title">🇯🇵 日本代表の道</div>
+
+    <p>日本代表はグループFに入り、以下の3試合を戦います。</p>
+
+    <table>
+      <thead><tr><th>節</th><th>日本時間</th><th>対戦</th><th>会場</th></tr></thead>
+      <tbody>
+        <tr><td>MD1</td><td>6/15(月) 5:00</td><td>🇳🇱 オランダ vs 🇯🇵 <strong>日本</strong></td><td>ダラス（AT&T Stadium）</td></tr>
+        <tr><td>MD2</td><td>6/21(日) 13:00</td><td>🇹🇳 チュニジア vs 🇯🇵 <strong>日本</strong></td><td>グアダラハラ</td></tr>
+        <tr><td>MD3</td><td>6/26(金) 8:00</td><td>🇯🇵 <strong>日本</strong> vs 🇸🇪 スウェーデン</td><td>ダラス（AT&T Stadium）</td></tr>
+      </tbody>
+    </table>
+
+    <h3>ノックアウトステージへの進出先</h3>
+    <table>
+      <thead><tr><th>グループF順位</th><th>R32試合</th><th>日本時間</th><th>対戦相手</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>🥇 1位通過</td>
+          <td>M75</td>
+          <td>6/30(月) 10:00</td>
+          <td>C組2位（ブラジル・モロッコ・ハイチ・スコットランドのうち2位）</td>
+        </tr>
+        <tr>
+          <td>🥈 2位通過</td>
+          <td>M76</td>
+          <td>6/30(月) 2:00</td>
+          <td>C組1位（ブラジル・モロッコ・ハイチ・スコットランドのうち1位）</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">📌</span>
+      <div>3位通過の場合、R32対戦相手はグループF〜Lの3位チームの成績によって495通りの組み合わせから決定（FIFA大会規程附属書C）。</div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURED ========== -->
+  <section id="featured">
+    <div class="section-title">⭐ 注目国（カレンダーで金★表示）</div>
+
+    <p>カレンダービューで以下6か国が絡む試合を<strong style="color:#d97706;">金色の★</strong>で強調表示しています。</p>
+
+    <table>
+      <thead><tr><th>国</th><th>グループ</th><th>世界ランク（参考）</th></tr></thead>
+      <tbody>
+        <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 イングランド</td><td>L</td><td>UEFA強豪</td></tr>
+        <tr><td>🇪🇸 スペイン</td><td>H</td><td>前回ユーロ王者</td></tr>
+        <tr><td>🇫🇷 フランス</td><td>I</td><td>FIFA世界ランク上位</td></tr>
+        <tr><td>🇧🇷 ブラジル</td><td>C</td><td>南米代表格</td></tr>
+        <tr><td>🇦🇷 アルゼンチン</td><td>J</td><td>前回W杯王者（2022）</td></tr>
+        <tr><td>🇵🇹 ポルトガル</td><td>K</td><td>UEFA強豪</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <div>注目国のリストは <code>calendar.html</code> の <code>FEATURED_TEAMS</code> 変数（JavaScriptセクション）で管理しています。変更したい場合は該当行の国コードを追加・削除してください。</div>
+    </div>
+  </section>
+
+  <!-- ========== UPDATE ========== -->
+  <section id="update">
+    <div class="section-title">🔄 更新方法</div>
+
+    <h3>グループステージ終了後（6/29以降）：トーナメント表の更新</h3>
+    <p>bracket.html の各試合スロットに進出チームを書き込む場合は、JavaScriptの <code>R32</code> 配列の各 <code>slots</code> オブジェクトを編集します。</p>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">🛠️</span>
+      <div>
+        例：日本がグループF1位通過→ M75の <code>slots[0]</code> を書き換え<br>
+        <code>{ lbl:'🇯🇵 日本', rank:1, jpn:true }</code>
+      </div>
+    </div>
+
+    <h3>試合結果の反映（カレンダー・日程表）</h3>
+    <p>現状のカレンダーと日程表は「予定」表示のみです。試合結果を反映する機能は現バージョンには含まれていません。</p>
+
+    <h3>注目国の追加・変更（カレンダー）</h3>
+    <p><code>calendar.html</code> を開き、以下の箇所を編集：</p>
+    <div class="tz-note">
+      <code>const FEATURED_TEAMS = new Set(['ENG', 'ESP', 'FRA', 'BRA', 'ARG', 'POR']);</code><br>
+      → 追加したい国は3文字コードで追加、削除は該当コードを消す
+    </div>
+
+    <h3>各ファイルを開く方法</h3>
+    <ol class="steps">
+      <li>Finder で <code>01_time table</code> フォルダを開く</li>
+      <li>目的のHTMLファイルをダブルクリック（またはドラッグ＆ドロップでブラウザへ）</li>
+      <li>ページ上部のタブ（📋 日程表 ／ 📅 カレンダー ／ 🏆 トーナメント表）で切り替え</li>
+    </ol>
+  </section>
+
+  <!-- ========== SOURCES ========== -->
+  <section id="sources">
+    <div class="section-title">📚 データソース</div>
+
+    <table>
+      <thead><tr><th>データ種別</th><th>参照元</th></tr></thead>
+      <tbody>
+        <tr><td>グループステージ全試合日程・時刻</td><td>ESPN.com, Goal.com 日本, JFA公式サイト</td></tr>
+        <tr><td>ノックアウトステージ日程・対戦カード</td><td>Wikipedia「2026 FIFA World Cup knockout stage」, FIFA.com公式</td></tr>
+        <tr><td>R32対戦カード（グループ順位割り当て）</td><td>Wikipedia「2026 FIFA World Cup knockout stage」</td></tr>
+        <tr><td>日本代表日程</td><td>Goal.com 日本, JFA公式サイト</td></tr>
+        <tr><td>国旗絵文字</td><td>Unicode Emoji（各OSのシステムフォント）</td></tr>
+        <tr><td>時刻変換</td><td>各会場の現地タイムゾーンをもとにClaude Code(Sonnet 4.6)が計算</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-danger">
+      <span class="callout-icon">⚠️</span>
+      <div>
+        <strong>免責事項：</strong>試合時刻・対戦カードはFIFA/ESPN等の公開情報をもとに作成していますが、大会運営上の変更が生じる場合があります。最新の公式情報は <a href="https://www.fifa.com/ja/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures" target="_blank">FIFA公式サイト</a> でご確認ください。
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const links = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section[id]');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 FIFAワールドカップ 試合日程（日本時間）</title>
+  <style>
+    :root {
+      --primary: #1a3a6c;
+      --accent: #c8102e;
+      --japan: #bc002d;
+      --japan-bg: #fff0f0;
+      --gold: #f0b429;
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --border: #d0d7e8;
+      --text: #1a1a2e;
+      --muted: #5a6a8a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #0d2547 100%);
+      color: white;
+      padding: 36px 32px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='28' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-opacity='0.07'/%3E%3C/svg%3E") repeat;
+    }
+    header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      position: relative;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4);
+    }
+    header .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: 6px;
+      position: relative;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    }
+    header .meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    header .meta span {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    /* ===== TAB NAV ===== */
+    .tab-nav {
+      background: #0d2547;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 0 20px;
+    }
+    .tab-nav a {
+      display: inline-block;
+      padding: 10px 28px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .tab-nav a:hover { color: white; }
+    .tab-nav a.active {
+      color: white;
+      border-bottom-color: #f0b429;
+    }
+
+    /* ===== JAPAN HIGHLIGHT ===== */
+    .japan-section {
+      background: linear-gradient(135deg, #bc002d 0%, #8b0021 100%);
+      color: white;
+      padding: 20px 32px;
+      text-align: center;
+    }
+    .japan-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .japan-matches {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .japan-match-card {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      padding: 12px 20px;
+      min-width: 200px;
+    }
+    .japan-match-card .date { font-size: 11px; opacity: 0.85; }
+    .japan-match-card .match { font-size: 15px; font-weight: 700; margin: 4px 0; }
+    .japan-match-card .time { font-size: 20px; font-weight: 800; color: var(--gold); }
+    .japan-match-card .venue { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 28px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    /* ===== KNOCKOUT DATES ===== */
+    .knockout-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .knockout-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .knockout-card.final {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, #fffbef, #fff8e0);
+    }
+    .knockout-card .round { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .knockout-card .kdate { font-size: 13px; font-weight: 700; margin-top: 4px; color: var(--primary); }
+    .knockout-card.final .kdate { color: #9a6600; font-size: 14px; }
+
+    /* ===== GROUP GRID ===== */
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+      gap: 16px;
+    }
+
+    .group-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .group-card.japan-group {
+      border-color: var(--japan);
+      box-shadow: 0 0 0 2px rgba(188,0,45,0.15);
+    }
+
+    .group-header {
+      background: var(--primary);
+      color: white;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .group-card.japan-group .group-header {
+      background: linear-gradient(90deg, var(--japan) 0%, #8b0021 100%);
+    }
+    .group-label {
+      font-size: 18px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.18);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .group-teams {
+      font-size: 12px;
+      opacity: 0.9;
+      line-height: 1.4;
+    }
+    .japan-badge {
+      margin-left: auto;
+      background: var(--gold);
+      color: #7a4800;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      background: #f0f3fa;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 7px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #eef1f8;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f7f9ff; }
+
+    .japan-row td { background: var(--japan-bg); }
+    .japan-row:hover td { background: #ffe8ea; }
+
+    td.datetime {
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+      font-size: 12px;
+    }
+    td.matchup {
+      font-weight: 600;
+    }
+    td.matchup .japan-flag {
+      color: var(--japan);
+      font-weight: 800;
+    }
+    td.venue-cell {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .md-badge {
+      display: inline-block;
+      background: #e8ecf8;
+      color: var(--primary);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 11px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .groups-grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 20px; }
+      .japan-matches { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ 2026 FIFA World Cup</h1>
+  <div class="subtitle">試合日程一覧（日本時間 / JST）</div>
+  <div class="meta">
+    <span>📅 2026年6月12日〜7月20日</span>
+    <span>🌎 アメリカ・カナダ・メキシコ</span>
+    <span>🏆 48チーム・104試合</span>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <a href="schedule.html" class="active">📋 日程表</a>
+  <a href="calendar.html">📅 カレンダー</a>
+  <a href="bracket.html">🏆 トーナメント表</a>
+</nav>
+
+<!-- JAPAN HIGHLIGHT -->
+<div class="japan-section">
+  <h2>🇯🇵 サムライブルー 試合日程</h2>
+  <div class="japan-matches">
+    <div class="japan-match-card">
+      <div class="date">第1節 ／ グループF</div>
+      <div class="match">オランダ vs 日本</div>
+      <div class="time">6/15(月) 5:00</div>
+      <div class="venue">ダラス（アーリントン）</div>
+    </div>
+    <div class="japan-match-card">
+      <div class="date">第2節 ／ グループF</div>
+      <div class="match">チュニジア vs 日本</div>
+      <div class="time">6/21(日) 13:00</div>
+      <div class="venue">グアダラハラ</div>
+    </div>
+    <div class="japan-match-card">
+      <div class="date">第3節 ／ グループF</div>
+      <div class="match">日本 vs スウェーデン</div>
+      <div class="time">6/26(金) 8:00</div>
+      <div class="venue">ダラス（アーリントン）</div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- KNOCKOUT SCHEDULE -->
+  <div class="section-title">ノックアウトステージ 日程</div>
+  <div class="knockout-grid">
+    <div class="knockout-card">
+      <div class="round">ラウンド32</div>
+      <div class="kdate">6/29 〜 7/4</div>
+    </div>
+    <div class="knockout-card">
+      <div class="round">ラウンド16</div>
+      <div class="kdate">7/5 〜 7/8</div>
+    </div>
+    <div class="knockout-card">
+      <div class="round">準々決勝</div>
+      <div class="kdate">7/10 〜 7/12</div>
+    </div>
+    <div class="knockout-card">
+      <div class="round">準決勝</div>
+      <div class="kdate">7/15 〜 7/16</div>
+    </div>
+    <div class="knockout-card">
+      <div class="round">3位決定戦</div>
+      <div class="kdate">7/19(日)</div>
+    </div>
+    <div class="knockout-card final">
+      <div class="round">🏆 決　勝</div>
+      <div class="kdate">7/20(月) 4:00</div>
+    </div>
+  </div>
+
+  <!-- GROUP STAGE -->
+  <div class="section-title">グループステージ 全試合</div>
+
+  <div class="groups-grid">
+
+    <!-- GROUP A -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">A</div>
+        <div class="group-teams">メキシコ ／ 南アフリカ ／ 韓国 ／ チェコ</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/12(金) 4:00</td><td class="matchup">メキシコ vs 南アフリカ</td><td class="venue-cell">メキシコシティ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/12(金) 11:00</td><td class="matchup">韓国 vs チェコ</td><td class="venue-cell">グアダラハラ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/19(金) 1:00</td><td class="matchup">チェコ vs 南アフリカ</td><td class="venue-cell">アトランタ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/19(金) 12:00</td><td class="matchup">メキシコ vs 韓国</td><td class="venue-cell">グアダラハラ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/25(木) 10:00</td><td class="matchup">南アフリカ vs 韓国</td><td class="venue-cell">モンテレイ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/25(木) 10:00</td><td class="matchup">チェコ vs メキシコ</td><td class="venue-cell">メキシコシティ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP B -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">B</div>
+        <div class="group-teams">カナダ ／ ボスニア・ヘルツェゴビナ ／ カタール ／ スイス</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/13(土) 4:00</td><td class="matchup">カナダ vs ボスニア・ヘルツェゴビナ</td><td class="venue-cell">トロント</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/14(日) 4:00</td><td class="matchup">カタール vs スイス</td><td class="venue-cell">サンタクララ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/19(金) 4:00</td><td class="matchup">スイス vs ボスニア・ヘルツェゴビナ</td><td class="venue-cell">イングルウッド</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/19(金) 7:00</td><td class="matchup">カナダ vs カタール</td><td class="venue-cell">バンクーバー</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/25(木) 4:00</td><td class="matchup">スイス vs カナダ</td><td class="venue-cell">バンクーバー</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/25(木) 4:00</td><td class="matchup">ボスニア・ヘルツェゴビナ vs カタール</td><td class="venue-cell">シアトル</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP C -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">C</div>
+        <div class="group-teams">ブラジル ／ モロッコ ／ ハイチ ／ スコットランド</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/14(日) 7:00</td><td class="matchup">ブラジル vs モロッコ</td><td class="venue-cell">イーストラザフォード</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/14(日) 10:00</td><td class="matchup">ハイチ vs スコットランド</td><td class="venue-cell">フォックスボロ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/20(土) 7:00</td><td class="matchup">スコットランド vs モロッコ</td><td class="venue-cell">フォックスボロ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/20(土) 10:00</td><td class="matchup">ブラジル vs ハイチ</td><td class="venue-cell">フィラデルフィア</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/25(木) 7:00</td><td class="matchup">スコットランド vs ブラジル</td><td class="venue-cell">マイアミガーデンズ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/25(木) 7:00</td><td class="matchup">モロッコ vs ハイチ</td><td class="venue-cell">アトランタ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP D -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">D</div>
+        <div class="group-teams">アメリカ ／ パラグアイ ／ オーストラリア ／ トルコ</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/13(土) 10:00</td><td class="matchup">アメリカ vs パラグアイ</td><td class="venue-cell">イングルウッド</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/14(日) 13:00</td><td class="matchup">オーストラリア vs トルコ</td><td class="venue-cell">バンクーバー</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/20(土) 4:00</td><td class="matchup">アメリカ vs オーストラリア</td><td class="venue-cell">シアトル</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/20(土) 13:00</td><td class="matchup">トルコ vs パラグアイ</td><td class="venue-cell">サンタクララ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/26(金) 11:00</td><td class="matchup">トルコ vs アメリカ</td><td class="venue-cell">イングルウッド</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/26(金) 11:00</td><td class="matchup">パラグアイ vs オーストラリア</td><td class="venue-cell">サンタクララ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP E -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">E</div>
+        <div class="group-teams">ドイツ ／ キュラソー ／ コートジボワール ／ エクアドル</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/15(月) 2:00</td><td class="matchup">ドイツ vs キュラソー</td><td class="venue-cell">ヒューストン</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/15(月) 8:00</td><td class="matchup">コートジボワール vs エクアドル</td><td class="venue-cell">フィラデルフィア</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/21(日) 5:00</td><td class="matchup">ドイツ vs コートジボワール</td><td class="venue-cell">トロント</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/21(日) 9:00</td><td class="matchup">エクアドル vs キュラソー</td><td class="venue-cell">カンザスシティ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/26(金) 5:00</td><td class="matchup">エクアドル vs ドイツ</td><td class="venue-cell">イーストラザフォード</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/26(金) 5:00</td><td class="matchup">キュラソー vs コートジボワール</td><td class="venue-cell">フィラデルフィア</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP F (JAPAN) -->
+    <div class="group-card japan-group">
+      <div class="group-header">
+        <div class="group-label">F</div>
+        <div class="group-teams">オランダ ／ 日本 ／ スウェーデン ／ チュニジア</div>
+        <div class="japan-badge">🇯🇵 日本の組</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr class="japan-row"><td class="datetime"><span class="md-badge">MD1</span>6/15(月) 5:00</td><td class="matchup"><span class="japan-flag">🇯🇵 オランダ vs 日本</span></td><td class="venue-cell">ダラス（アーリントン）</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/15(月) 11:00</td><td class="matchup">スウェーデン vs チュニジア</td><td class="venue-cell">グアダラハラ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/21(日) 2:00</td><td class="matchup">オランダ vs スウェーデン</td><td class="venue-cell">ヒューストン</td></tr>
+          <tr class="japan-row"><td class="datetime"><span class="md-badge">MD2</span>6/21(日) 13:00</td><td class="matchup"><span class="japan-flag">🇯🇵 チュニジア vs 日本</span></td><td class="venue-cell">グアダラハラ</td></tr>
+          <tr class="japan-row"><td class="datetime"><span class="md-badge">MD3</span>6/26(金) 8:00</td><td class="matchup"><span class="japan-flag">🇯🇵 日本 vs スウェーデン</span></td><td class="venue-cell">ダラス（アーリントン）</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/26(金) 8:00</td><td class="matchup">チュニジア vs オランダ</td><td class="venue-cell">カンザスシティ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP G -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">G</div>
+        <div class="group-teams">ベルギー ／ エジプト ／ イラン ／ ニュージーランド</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/16(火) 7:00</td><td class="matchup">ベルギー vs エジプト</td><td class="venue-cell">シアトル</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/16(火) 13:00</td><td class="matchup">イラン vs ニュージーランド</td><td class="venue-cell">イングルウッド</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/22(月) 4:00</td><td class="matchup">ベルギー vs イラン</td><td class="venue-cell">イングルウッド</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/22(月) 10:00</td><td class="matchup">ニュージーランド vs エジプト</td><td class="venue-cell">バンクーバー</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/27(土) 12:00</td><td class="matchup">エジプト vs イラン</td><td class="venue-cell">シアトル</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/27(土) 12:00</td><td class="matchup">ニュージーランド vs ベルギー</td><td class="venue-cell">バンクーバー</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP H -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">H</div>
+        <div class="group-teams">スペイン ／ カーボベルデ ／ サウジアラビア ／ ウルグアイ</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/16(火) 2:00</td><td class="matchup">スペイン vs カーボベルデ</td><td class="venue-cell">アトランタ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/16(火) 7:00</td><td class="matchup">サウジアラビア vs ウルグアイ</td><td class="venue-cell">マイアミガーデンズ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/22(月) 1:00</td><td class="matchup">スペイン vs サウジアラビア</td><td class="venue-cell">アトランタ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/22(月) 7:00</td><td class="matchup">ウルグアイ vs カーボベルデ</td><td class="venue-cell">マイアミガーデンズ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/27(土) 9:00</td><td class="matchup">カーボベルデ vs サウジアラビア</td><td class="venue-cell">ヒューストン</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/27(土) 9:00</td><td class="matchup">ウルグアイ vs スペイン</td><td class="venue-cell">グアダラハラ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP I -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">I</div>
+        <div class="group-teams">フランス ／ セネガル ／ イラク ／ ノルウェー</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/17(水) 4:00</td><td class="matchup">フランス vs セネガル</td><td class="venue-cell">イーストラザフォード</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/17(水) 7:00</td><td class="matchup">イラク vs ノルウェー</td><td class="venue-cell">フォックスボロ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/23(火) 6:00</td><td class="matchup">フランス vs イラク</td><td class="venue-cell">フィラデルフィア</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/23(火) 9:00</td><td class="matchup">ノルウェー vs セネガル</td><td class="venue-cell">イーストラザフォード</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/27(土) 4:00</td><td class="matchup">ノルウェー vs フランス</td><td class="venue-cell">フォックスボロ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/27(土) 4:00</td><td class="matchup">セネガル vs イラク</td><td class="venue-cell">トロント</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP J -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">J</div>
+        <div class="group-teams">アルゼンチン ／ アルジェリア ／ オーストリア ／ ヨルダン</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/17(水) 10:00</td><td class="matchup">アルゼンチン vs アルジェリア</td><td class="venue-cell">カンザスシティ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/17(水) 13:00</td><td class="matchup">オーストリア vs ヨルダン</td><td class="venue-cell">サンタクララ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/23(火) 2:00</td><td class="matchup">アルゼンチン vs オーストリア</td><td class="venue-cell">ダラス（アーリントン）</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/23(火) 12:00</td><td class="matchup">ヨルダン vs アルジェリア</td><td class="venue-cell">サンタクララ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/28(日) 11:00</td><td class="matchup">アルジェリア vs オーストリア</td><td class="venue-cell">カンザスシティ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/28(日) 11:00</td><td class="matchup">ヨルダン vs アルゼンチン</td><td class="venue-cell">ダラス（アーリントン）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP K -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">K</div>
+        <div class="group-teams">ポルトガル ／ コンゴ民主共和国 ／ ウズベキスタン ／ コロンビア</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/18(木) 2:00</td><td class="matchup">ポルトガル vs コンゴ民主共和国</td><td class="venue-cell">ヒューストン</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/18(木) 11:00</td><td class="matchup">ウズベキスタン vs コロンビア</td><td class="venue-cell">メキシコシティ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/24(水) 2:00</td><td class="matchup">ポルトガル vs ウズベキスタン</td><td class="venue-cell">ヒューストン</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/24(水) 11:00</td><td class="matchup">コロンビア vs コンゴ民主共和国</td><td class="venue-cell">グアダラハラ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/28(日) 8:30</td><td class="matchup">コロンビア vs ポルトガル</td><td class="venue-cell">マイアミガーデンズ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/28(日) 8:30</td><td class="matchup">コンゴ民主共和国 vs ウズベキスタン</td><td class="venue-cell">アトランタ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GROUP L -->
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label">L</div>
+        <div class="group-teams">イングランド ／ クロアチア ／ ガーナ ／ パナマ</div>
+      </div>
+      <table>
+        <thead><tr><th>日本時間</th><th>対戦カード</th><th>会場</th></tr></thead>
+        <tbody>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/18(木) 5:00</td><td class="matchup">イングランド vs クロアチア</td><td class="venue-cell">ダラス（アーリントン）</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD1</span>6/18(木) 8:00</td><td class="matchup">ガーナ vs パナマ</td><td class="venue-cell">トロント</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/24(水) 5:00</td><td class="matchup">イングランド vs ガーナ</td><td class="venue-cell">フォックスボロ</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD2</span>6/24(水) 8:00</td><td class="matchup">パナマ vs クロアチア</td><td class="venue-cell">トロント</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/28(日) 6:00</td><td class="matchup">パナマ vs イングランド</td><td class="venue-cell">イーストラザフォード</td></tr>
+          <tr><td class="datetime"><span class="md-badge">MD3</span>6/28(日) 6:00</td><td class="matchup">クロアチア vs ガーナ</td><td class="venue-cell">フィラデルフィア</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /groups-grid -->
+</main>
+
+<footer>
+  2026 FIFA World Cup 試合日程（日本時間 JST）｜グループステージ全72試合＋ノックアウト｜時刻はETから+13時間換算
+</footer>
+
+<script>
+  const flags = {
+    'メキシコ': '🇲🇽',
+    '南アフリカ': '🇿🇦',
+    '韓国': '🇰🇷',
+    'チェコ': '🇨🇿',
+    'カナダ': '🇨🇦',
+    'ボスニア・ヘルツェゴビナ': '🇧🇦',
+    'カタール': '🇶🇦',
+    'スイス': '🇨🇭',
+    'ブラジル': '🇧🇷',
+    'モロッコ': '🇲🇦',
+    'ハイチ': '🇭🇹',
+    'スコットランド': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+    'アメリカ': '🇺🇸',
+    'パラグアイ': '🇵🇾',
+    'オーストラリア': '🇦🇺',
+    'トルコ': '🇹🇷',
+    'ドイツ': '🇩🇪',
+    'キュラソー': '🇨🇼',
+    'コートジボワール': '🇨🇮',
+    'エクアドル': '🇪🇨',
+    'オランダ': '🇳🇱',
+    '日本': '🇯🇵',
+    'スウェーデン': '🇸🇪',
+    'チュニジア': '🇹🇳',
+    'ベルギー': '🇧🇪',
+    'エジプト': '🇪🇬',
+    'イラン': '🇮🇷',
+    'ニュージーランド': '🇳🇿',
+    'スペイン': '🇪🇸',
+    'カーボベルデ': '🇨🇻',
+    'サウジアラビア': '🇸🇦',
+    'ウルグアイ': '🇺🇾',
+    'フランス': '🇫🇷',
+    'セネガル': '🇸🇳',
+    'イラク': '🇮🇶',
+    'ノルウェー': '🇳🇴',
+    'アルゼンチン': '🇦🇷',
+    'アルジェリア': '🇩🇿',
+    'オーストリア': '🇦🇹',
+    'ヨルダン': '🇯🇴',
+    'ポルトガル': '🇵🇹',
+    'コンゴ民主共和国': '🇨🇩',
+    'ウズベキスタン': '🇺🇿',
+    'コロンビア': '🇨🇴',
+    'イングランド': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+    'クロアチア': '🇭🇷',
+    'ガーナ': '🇬🇭',
+    'パナマ': '🇵🇦',
+  };
+
+  // 長い名前から順に置換（部分一致を防ぐため）
+  const sorted = Object.keys(flags).sort((a, b) => b.length - a.length);
+
+  function addFlags(text) {
+    let result = text;
+    for (const name of sorted) {
+      result = result.replaceAll(name, `${flags[name]} ${name}`);
+    }
+    return result;
+  }
+
+  // 対戦カードセル・グループメンバー表示・日本ハイライト欄に適用
+  document.querySelectorAll('.matchup, .group-teams, .japan-match-card .match').forEach(el => {
+    el.innerHTML = addFlags(el.innerHTML);
+  });
+</script>
+
+</body>
+</html>
