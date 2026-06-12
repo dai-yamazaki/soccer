@@ -33,7 +33,11 @@
     header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; position: relative; text-shadow: 0 1px 6px rgba(0,0,0,0.4); }
 
     .tab-nav { background: #0d2547; display: flex; justify-content: center; gap: 4px; padding: 0 20px; }
-    .tab-nav a { display: inline-block; padding: 10px 28px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 13px; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.15s; }
+    .tab-nav a { display: inline-block; padding: 10px 28px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 13px; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; }
+    @media (max-width: 768px) {
+      .tab-nav { padding: 0; }
+      .tab-nav a { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; }
+    }
     .tab-nav a:hover { color: white; }
     .tab-nav a.active { color: white; border-bottom-color: var(--gold); }
 

@@ -72,6 +72,7 @@
       font-weight: 600;
       border-bottom: 3px solid transparent;
       transition: all 0.15s;
+      white-space: nowrap;
     }
     .tab-nav a:hover { color: white; }
     .tab-nav a.active {
@@ -176,7 +177,7 @@
     /* ===== CALENDAR GRID ===== */
     .cal-grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
@@ -322,10 +323,56 @@
       margin-top: 12px;
     }
 
+    /* ===== TABLET ===== */
     @media (max-width: 768px) {
       .chip-teams { display: none; }
       .chip-time { width: 22px; font-size: 8px; }
       .day-cell { min-height: 70px; padding: 4px 3px; }
+
+      /* タブ: 等幅・折り返しなし */
+      .tab-nav { padding: 0; }
+      .tab-nav a { flex: 1; text-align: center; padding: 10px 4px; }
+    }
+
+    /* ===== MOBILE (SP) ===== */
+    @media (max-width: 480px) {
+      /* ヘッダー */
+      header { padding: 18px 14px 14px; }
+      header h1 { font-size: 19px; }
+      header .subtitle { font-size: 12px; }
+
+      /* 日本バナー: 折り返し許可 */
+      .japan-banner { font-size: 11px; padding: 10px 12px; line-height: 1.7; }
+      .japan-banner strong { font-size: 13px; }
+
+      /* メイン余白を最小化 → グリッド幅を最大化 */
+      main { padding: 12px 8px 32px; }
+
+      /* 凡例 */
+      .legend { padding: 10px 12px; }
+      .month-title { font-size: 16px; }
+
+      /* チップを極小化して7列に収める */
+      .match-chip {
+        padding: 1px 2px 1px 4px;
+        border-left-width: 2px;
+        border-radius: 3px;
+        gap: 2px;
+        margin-bottom: 1px;
+      }
+      .chip-badge { width: 10px; height: 10px; font-size: 7px; border-radius: 2px; }
+      .chip-time  { width: 17px; font-size: 7px; }
+      .japan-star, .featured-star { display: none; }
+
+      /* ノックアウトチップ */
+      .ko-chip { font-size: 8px; padding: 3px 2px; }
+
+      /* マス目 */
+      .day-cell { min-height: 56px; padding: 3px 2px; }
+      .day-num  { font-size: 10px; margin-bottom: 2px; }
+
+      /* 曜日ヘッダー */
+      .dow-header { padding: 6px 2px; font-size: 10px; }
     }
   </style>
 </head>
