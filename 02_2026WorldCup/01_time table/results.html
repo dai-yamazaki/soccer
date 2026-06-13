@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 FIFAワールドカップ グループリーグ結果</title>
+  <style>
+    :root {
+      --primary: #1a3a6c;
+      --japan:   #bc002d;
+      --gold:    #f0b429;
+      --bg:      #f0f2f8;
+      --card:    #fff;
+      --border:  #d0d7e8;
+      --text:    #1a1a2e;
+      --muted:   #64748b;
+      --win:     #16a34a;
+      --draw:    #ca8a04;
+      --loss:    #dc2626;
+      --qualify: #dcfce7;
+      --potential:#fef9c3;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      background: var(--bg); color: var(--text); font-size: 13px;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #0d2547 100%);
+      color: white; padding: 22px 20px 16px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='28' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-opacity='0.07'/%3E%3C/svg%3E") repeat;
+    }
+    header h1 { font-size: 22px; font-weight: 800; position: relative; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    header .subtitle { font-size: 12px; opacity: 0.85; margin-top: 4px; position: relative; }
+
+    /* ===== TAB NAV ===== */
+    .tab-nav {
+      background: #0d2547;
+      display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .tab-nav::-webkit-scrollbar { display: none; }
+    .tab-nav a {
+      display: inline-block; flex-shrink: 0;
+      padding: 10px 18px;
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      font-size: 12px; font-weight: 600;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap; transition: all 0.15s;
+    }
+    .tab-nav a:hover { color: white; }
+    .tab-nav a.active { color: white; border-bottom-color: var(--gold); }
+
+    /* ===== JAPAN BANNER ===== */
+    .japan-banner {
+      background: linear-gradient(135deg, #bc002d 0%, #8b0021 100%);
+      color: white; text-align: center;
+      padding: 10px 14px; font-size: 12px; font-weight: 600; line-height: 1.7;
+    }
+    .japan-banner strong { color: var(--gold); }
+
+    /* ===== MAIN ===== */
+    main { max-width: 1100px; margin: 0 auto; padding: 16px 14px 48px; }
+
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin: 20px 0 12px; padding-bottom: 6px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    /* ===== GROUP GRID ===== */
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 14px;
+    }
+
+    /* ===== GROUP CARD ===== */
+    .group-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .group-card.japan-group { border-color: var(--japan); box-shadow: 0 0 0 2px rgba(188,0,45,0.15); }
+
+    .group-header {
+      background: var(--primary); color: white;
+      padding: 9px 14px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer; user-select: none;
+    }
+    .group-card.japan-group .group-header { background: linear-gradient(90deg, var(--japan), #8b0021); }
+    .group-label {
+      font-size: 16px; font-weight: 800;
+      background: rgba(255,255,255,0.18);
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px; flex-shrink: 0;
+    }
+    .group-teams-label { font-size: 11px; opacity: 0.9; flex: 1; }
+    .group-toggle { font-size: 12px; opacity: 0.7; flex-shrink: 0; transition: transform 0.2s; }
+    .group-card.collapsed .group-toggle { transform: rotate(-90deg); }
+
+    .group-body { padding: 0; }
+    .group-card.collapsed .group-body { display: none; }
+
+    /* ===== STANDINGS TABLE ===== */
+    .standings-table {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+    }
+    .standings-table th {
+      background: #f0f4fb; color: var(--muted);
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 5px 6px; text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .standings-table th.team-col { text-align: left; padding-left: 10px; }
+    .standings-table td {
+      padding: 7px 6px; text-align: center;
+      border-bottom: 1px solid #f0f3fa;
+      font-size: 12px; vertical-align: middle;
+    }
+    .standings-table td.team-cell {
+      text-align: left; padding-left: 10px;
+      font-weight: 600; display: flex; align-items: center; gap: 5px;
+    }
+    .standings-table tr:last-child td { border-bottom: none; }
+    .standings-table tr.qualify  td { background: var(--qualify); }
+    .standings-table tr.potential td { background: var(--potential); }
+    .standings-table tr.japan-team td { background: #fff0f0; }
+
+    .rank-num { color: var(--muted); font-size: 10px; width: 14px; text-align: right; flex-shrink: 0; }
+    .pts-cell { font-weight: 800; color: var(--primary); }
+    .gd-cell.pos { color: var(--win); }
+    .gd-cell.neg { color: var(--loss); }
+
+    /* ===== MATCH RESULT ROWS ===== */
+    .matches-section {
+      border-top: 2px solid #f0f3fa;
+      padding: 8px 0 4px;
+    }
+    .md-label {
+      font-size: 9px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 4px 10px 2px;
+    }
+    .match-row {
+      display: flex; align-items: center;
+      padding: 6px 10px; gap: 6px;
+      border-bottom: 1px solid #f5f7fc; font-size: 12px;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-row.japan-match { background: #fff5f5; }
+
+    .match-date { font-size: 10px; color: var(--muted); width: 70px; flex-shrink: 0; }
+    .match-home { flex: 1; text-align: right; font-weight: 600; }
+    .match-score {
+      font-size: 13px; font-weight: 800; color: var(--primary);
+      background: #f0f4fb; border-radius: 6px;
+      padding: 3px 8px; min-width: 52px; text-align: center; flex-shrink: 0;
+    }
+    .match-score.played { background: #1a3a6c; color: white; }
+    .match-score.live   { background: #dc2626; color: white; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    .match-away { flex: 1; font-weight: 600; }
+    .result-badge {
+      font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+    }
+    .result-badge.w { background: #dcfce7; color: #166534; }
+    .result-badge.d { background: #fef9c3; color: #854d0e; }
+    .result-badge.l { background: #fee2e2; color: #991b1b; }
+
+    /* Legend */
+    .legend-row {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 12px; margin-bottom: 14px;
+      font-size: 11px; align-items: center;
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    footer {
+      text-align: center; padding: 14px; font-size: 11px; color: var(--muted);
+      border-top: 1px solid var(--border); margin-top: 12px;
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 600px) {
+      .groups-grid { grid-template-columns: 1fr; }
+      .match-date { width: 58px; font-size: 9px; }
+      .match-score { min-width: 44px; font-size: 12px; padding: 3px 5px; }
+      .standings-table td, .standings-table th { padding: 5px 4px; font-size: 11px; }
+      .standings-table td.team-cell { padding-left: 8px; font-size: 11px; }
+      main { padding: 12px 8px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ 2026 FIFA World Cup</h1>
+  <div class="subtitle">グループリーグ 結果・順位表（日本時間）</div>
+</header>
+
+<nav class="tab-nav">
+  <a href="schedule.html">📋 日程表</a>
+  <a href="calendar.html">📅 カレンダー</a>
+  <a href="results.html" class="active">📊 結果・順位</a>
+  <a href="bracket.html">🏆 トーナメント表</a>
+</nav>
+
+<div class="japan-banner">
+  🇯🇵 日本 グループF ／ <strong>6/15(月) 5:00</strong> オランダ戦　<strong>6/21(日) 13:00</strong> チュニジア戦　<strong>6/26(金) 8:00</strong> スウェーデン戦
+</div>
+
+<main>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:var(--qualify);border:1px solid #86efac;"></div> 決勝T進出圏（1・2位）
+    <div class="legend-dot" style="background:var(--potential);border:1px solid #fde047;"></div> 3位通過圏内
+    <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:700;padding:1px 5px;background:#dcfce7;color:#166534;border-radius:3px;">W</span> 日本勝利</div>
+    <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:700;padding:1px 5px;background:#fef9c3;color:#854d0e;border-radius:3px;">D</span> 引き分け</div>
+    <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:700;padding:1px 5px;background:#fee2e2;color:#991b1b;border-radius:3px;">L</span> 日本敗戦</div>
+  </div>
+
+  <div class="section-title">グループステージ 全12グループ</div>
+  <div class="groups-grid" id="groups-grid"></div>
+</main>
+
+<footer>
+  2026 FIFA World Cup グループリーグ結果（日本時間 JST）｜スコアは随時更新
+</footer>
+
+<script>
+/* ============================================================
+   TEAMS DATA
+============================================================ */
+const TEAMS = {
+  MX:  { flag:'🇲🇽', name:'メキシコ' },
+  RSA: { flag:'🇿🇦', name:'南アフリカ' },
+  KOR: { flag:'🇰🇷', name:'韓国' },
+  CZE: { flag:'🇨🇿', name:'チェコ' },
+  CAN: { flag:'🇨🇦', name:'カナダ' },
+  BIH: { flag:'🇧🇦', name:'ボスニア' },
+  QAT: { flag:'🇶🇦', name:'カタール' },
+  SUI: { flag:'🇨🇭', name:'スイス' },
+  BRA: { flag:'🇧🇷', name:'ブラジル' },
+  MAR: { flag:'🇲🇦', name:'モロッコ' },
+  HAI: { flag:'🇭🇹', name:'ハイチ' },
+  SCO: { flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', name:'スコットランド' },
+  USA: { flag:'🇺🇸', name:'アメリカ' },
+  PAR: { flag:'🇵🇾', name:'パラグアイ' },
+  AUS: { flag:'🇦🇺', name:'オーストラリア' },
+  TUR: { flag:'🇹🇷', name:'トルコ' },
+  GER: { flag:'🇩🇪', name:'ドイツ' },
+  CUW: { flag:'🇨🇼', name:'キュラソー' },
+  CIV: { flag:'🇨🇮', name:'コートジボワール' },
+  ECU: { flag:'🇪🇨', name:'エクアドル' },
+  NED: { flag:'🇳🇱', name:'オランダ' },
+  JPN: { flag:'🇯🇵', name:'日本' },
+  SWE: { flag:'🇸🇪', name:'スウェーデン' },
+  TUN: { flag:'🇹🇳', name:'チュニジア' },
+  BEL: { flag:'🇧🇪', name:'ベルギー' },
+  EGY: { flag:'🇪🇬', name:'エジプト' },
+  IRN: { flag:'🇮🇷', name:'イラン' },
+  NZL: { flag:'🇳🇿', name:'ニュージーランド' },
+  ESP: { flag:'🇪🇸', name:'スペイン' },
+  CPV: { flag:'🇨🇻', name:'カーボベルデ' },
+  KSA: { flag:'🇸🇦', name:'サウジアラビア' },
+  URU: { flag:'🇺🇾', name:'ウルグアイ' },
+  FRA: { flag:'🇫🇷', name:'フランス' },
+  SEN: { flag:'🇸🇳', name:'セネガル' },
+  IRQ: { flag:'🇮🇶', name:'イラク' },
+  NOR: { flag:'🇳🇴', name:'ノルウェー' },
+  ARG: { flag:'🇦🇷', name:'アルゼンチン' },
+  ALG: { flag:'🇩🇿', name:'アルジェリア' },
+  AUT: { flag:'🇦🇹', name:'オーストリア' },
+  JOR: { flag:'🇯🇴', name:'ヨルダン' },
+  POR: { flag:'🇵🇹', name:'ポルトガル' },
+  COD: { flag:'🇨🇩', name:'コンゴ民主' },
+  UZB: { flag:'🇺🇿', name:'ウズベキスタン' },
+  COL: { flag:'🇨🇴', name:'コロンビア' },
+  ENG: { flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', name:'イングランド' },
+  CRO: { flag:'🇭🇷', name:'クロアチア' },
+  GHA: { flag:'🇬🇭', name:'ガーナ' },
+  PAN: { flag:'🇵🇦', name:'パナマ' },
+};
+
+/* ============================================================
+   GROUPS
+============================================================ */
+const GROUPS = {
+  A: ['MX','RSA','KOR','CZE'],
+  B: ['CAN','BIH','QAT','SUI'],
+  C: ['BRA','MAR','HAI','SCO'],
+  D: ['USA','PAR','AUS','TUR'],
+  E: ['GER','CUW','CIV','ECU'],
+  F: ['NED','JPN','SWE','TUN'],
+  G: ['BEL','EGY','IRN','NZL'],
+  H: ['ESP','CPV','KSA','URU'],
+  I: ['FRA','SEN','IRQ','NOR'],
+  J: ['ARG','ALG','AUT','JOR'],
+  K: ['POR','COD','UZB','COL'],
+  L: ['ENG','CRO','GHA','PAN'],
+};
+
+/* ============================================================
+   MATCH DATA
+   スコアを入力するには hs（ホーム得点）と as（アウェー得点）を数値で記入
+   例: { ..., hs: 2, as: 1, ... }
+   未試合は null のままにしてください
+============================================================ */
+const MATCHES = [
+  /* ── GROUP A ── */
+  { grp:'A', md:1, date:'06-12', time:'4:00',  home:'MX',  hs:null, as:null, away:'RSA' },
+  { grp:'A', md:1, date:'06-12', time:'11:00', home:'KOR', hs:null, as:null, away:'CZE' },
+  { grp:'A', md:2, date:'06-19', time:'1:00',  home:'CZE', hs:null, as:null, away:'RSA' },
+  { grp:'A', md:2, date:'06-19', time:'12:00', home:'MX',  hs:null, as:null, away:'KOR' },
+  { grp:'A', md:3, date:'06-25', time:'10:00', home:'RSA', hs:null, as:null, away:'KOR' },
+  { grp:'A', md:3, date:'06-25', time:'10:00', home:'CZE', hs:null, as:null, away:'MX'  },
+  /* ── GROUP B ── */
+  { grp:'B', md:1, date:'06-13', time:'4:00',  home:'CAN', hs:null, as:null, away:'BIH' },
+  { grp:'B', md:1, date:'06-14', time:'4:00',  home:'QAT', hs:null, as:null, away:'SUI' },
+  { grp:'B', md:2, date:'06-19', time:'4:00',  home:'SUI', hs:null, as:null, away:'BIH' },
+  { grp:'B', md:2, date:'06-19', time:'7:00',  home:'CAN', hs:null, as:null, away:'QAT' },
+  { grp:'B', md:3, date:'06-25', time:'4:00',  home:'SUI', hs:null, as:null, away:'CAN' },
+  { grp:'B', md:3, date:'06-25', time:'4:00',  home:'BIH', hs:null, as:null, away:'QAT' },
+  /* ── GROUP C ── */
+  { grp:'C', md:1, date:'06-14', time:'7:00',  home:'BRA', hs:null, as:null, away:'MAR' },
+  { grp:'C', md:1, date:'06-14', time:'10:00', home:'HAI', hs:null, as:null, away:'SCO' },
+  { grp:'C', md:2, date:'06-20', time:'7:00',  home:'SCO', hs:null, as:null, away:'MAR' },
+  { grp:'C', md:2, date:'06-20', time:'10:00', home:'BRA', hs:null, as:null, away:'HAI' },
+  { grp:'C', md:3, date:'06-25', time:'7:00',  home:'SCO', hs:null, as:null, away:'BRA' },
+  { grp:'C', md:3, date:'06-25', time:'7:00',  home:'MAR', hs:null, as:null, away:'HAI' },
+  /* ── GROUP D ── */
+  { grp:'D', md:1, date:'06-13', time:'10:00', home:'USA', hs:null, as:null, away:'PAR' },
+  { grp:'D', md:1, date:'06-14', time:'13:00', home:'AUS', hs:null, as:null, away:'TUR' },
+  { grp:'D', md:2, date:'06-20', time:'4:00',  home:'USA', hs:null, as:null, away:'AUS' },
+  { grp:'D', md:2, date:'06-20', time:'13:00', home:'TUR', hs:null, as:null, away:'PAR' },
+  { grp:'D', md:3, date:'06-26', time:'11:00', home:'TUR', hs:null, as:null, away:'USA' },
+  { grp:'D', md:3, date:'06-26', time:'11:00', home:'PAR', hs:null, as:null, away:'AUS' },
+  /* ── GROUP E ── */
+  { grp:'E', md:1, date:'06-15', time:'2:00',  home:'GER', hs:null, as:null, away:'CUW' },
+  { grp:'E', md:1, date:'06-15', time:'8:00',  home:'CIV', hs:null, as:null, away:'ECU' },
+  { grp:'E', md:2, date:'06-21', time:'5:00',  home:'GER', hs:null, as:null, away:'CIV' },
+  { grp:'E', md:2, date:'06-21', time:'9:00',  home:'ECU', hs:null, as:null, away:'CUW' },
+  { grp:'E', md:3, date:'06-26', time:'5:00',  home:'ECU', hs:null, as:null, away:'GER' },
+  { grp:'E', md:3, date:'06-26', time:'5:00',  home:'CUW', hs:null, as:null, away:'CIV' },
+  /* ── GROUP F（日本） ── */
+  { grp:'F', md:1, date:'06-15', time:'5:00',  home:'NED', hs:null, as:null, away:'JPN' },
+  { grp:'F', md:1, date:'06-15', time:'11:00', home:'SWE', hs:null, as:null, away:'TUN' },
+  { grp:'F', md:2, date:'06-21', time:'2:00',  home:'NED', hs:null, as:null, away:'SWE' },
+  { grp:'F', md:2, date:'06-21', time:'13:00', home:'TUN', hs:null, as:null, away:'JPN' },
+  { grp:'F', md:3, date:'06-26', time:'8:00',  home:'JPN', hs:null, as:null, away:'SWE' },
+  { grp:'F', md:3, date:'06-26', time:'8:00',  home:'TUN', hs:null, as:null, away:'NED' },
+  /* ── GROUP G ── */
+  { grp:'G', md:1, date:'06-16', time:'7:00',  home:'BEL', hs:null, as:null, away:'EGY' },
+  { grp:'G', md:1, date:'06-16', time:'13:00', home:'IRN', hs:null, as:null, away:'NZL' },
+  { grp:'G', md:2, date:'06-22', time:'4:00',  home:'BEL', hs:null, as:null, away:'IRN' },
+  { grp:'G', md:2, date:'06-22', time:'10:00', home:'NZL', hs:null, as:null, away:'EGY' },
+  { grp:'G', md:3, date:'06-27', time:'12:00', home:'EGY', hs:null, as:null, away:'IRN' },
+  { grp:'G', md:3, date:'06-27', time:'12:00', home:'NZL', hs:null, as:null, away:'BEL' },
+  /* ── GROUP H ── */
+  { grp:'H', md:1, date:'06-16', time:'2:00',  home:'ESP', hs:null, as:null, away:'CPV' },
+  { grp:'H', md:1, date:'06-16', time:'7:00',  home:'KSA', hs:null, as:null, away:'URU' },
+  { grp:'H', md:2, date:'06-22', time:'1:00',  home:'ESP', hs:null, as:null, away:'KSA' },
+  { grp:'H', md:2, date:'06-22', time:'7:00',  home:'URU', hs:null, as:null, away:'CPV' },
+  { grp:'H', md:3, date:'06-27', time:'9:00',  home:'CPV', hs:null, as:null, away:'KSA' },
+  { grp:'H', md:3, date:'06-27', time:'9:00',  home:'URU', hs:null, as:null, away:'ESP' },
+  /* ── GROUP I ── */
+  { grp:'I', md:1, date:'06-17', time:'4:00',  home:'FRA', hs:null, as:null, away:'SEN' },
+  { grp:'I', md:1, date:'06-17', time:'7:00',  home:'IRQ', hs:null, as:null, away:'NOR' },
+  { grp:'I', md:2, date:'06-23', time:'6:00',  home:'FRA', hs:null, as:null, away:'IRQ' },
+  { grp:'I', md:2, date:'06-23', time:'9:00',  home:'NOR', hs:null, as:null, away:'SEN' },
+  { grp:'I', md:3, date:'06-27', time:'4:00',  home:'NOR', hs:null, as:null, away:'FRA' },
+  { grp:'I', md:3, date:'06-27', time:'4:00',  home:'SEN', hs:null, as:null, away:'IRQ' },
+  /* ── GROUP J ── */
+  { grp:'J', md:1, date:'06-17', time:'10:00', home:'ARG', hs:null, as:null, away:'ALG' },
+  { grp:'J', md:1, date:'06-17', time:'13:00', home:'AUT', hs:null, as:null, away:'JOR' },
+  { grp:'J', md:2, date:'06-23', time:'2:00',  home:'ARG', hs:null, as:null, away:'AUT' },
+  { grp:'J', md:2, date:'06-23', time:'12:00', home:'JOR', hs:null, as:null, away:'ALG' },
+  { grp:'J', md:3, date:'06-28', time:'11:00', home:'ALG', hs:null, as:null, away:'AUT' },
+  { grp:'J', md:3, date:'06-28', time:'11:00', home:'JOR', hs:null, as:null, away:'ARG' },
+  /* ── GROUP K ── */
+  { grp:'K', md:1, date:'06-18', time:'2:00',  home:'POR', hs:null, as:null, away:'COD' },
+  { grp:'K', md:1, date:'06-18', time:'11:00', home:'UZB', hs:null, as:null, away:'COL' },
+  { grp:'K', md:2, date:'06-24', time:'2:00',  home:'POR', hs:null, as:null, away:'UZB' },
+  { grp:'K', md:2, date:'06-24', time:'11:00', home:'COL', hs:null, as:null, away:'COD' },
+  { grp:'K', md:3, date:'06-28', time:'8:30',  home:'COL', hs:null, as:null, away:'POR' },
+  { grp:'K', md:3, date:'06-28', time:'8:30',  home:'COD', hs:null, as:null, away:'UZB' },
+  /* ── GROUP L ── */
+  { grp:'L', md:1, date:'06-18', time:'5:00',  home:'ENG', hs:null, as:null, away:'CRO' },
+  { grp:'L', md:1, date:'06-18', time:'8:00',  home:'GHA', hs:null, as:null, away:'PAN' },
+  { grp:'L', md:2, date:'06-24', time:'5:00',  home:'ENG', hs:null, as:null, away:'GHA' },
+  { grp:'L', md:2, date:'06-24', time:'8:00',  home:'PAN', hs:null, as:null, away:'CRO' },
+  { grp:'L', md:3, date:'06-28', time:'6:00',  home:'PAN', hs:null, as:null, away:'ENG' },
+  { grp:'L', md:3, date:'06-28', time:'6:00',  home:'CRO', hs:null, as:null, away:'GHA' },
+];
+
+/* ============================================================
+   STANDINGS CALCULATION
+============================================================ */
+function calcStandings(grp) {
+  const stat = {};
+  GROUPS[grp].forEach(t => { stat[t] = { gp:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 }; });
+
+  MATCHES.filter(m => m.grp === grp && m.hs !== null && m.as !== null).forEach(m => {
+    const h = stat[m.home], a = stat[m.away];
+    h.gp++; a.gp++;
+    h.gf += m.hs; h.ga += m.as;
+    a.gf += m.as; a.ga += m.hs;
+    if (m.hs > m.as)      { h.w++; h.pts += 3; a.l++; }
+    else if (m.hs < m.as) { a.w++; a.pts += 3; h.l++; }
+    else                  { h.d++; h.pts++;     a.d++; a.pts++; }
+  });
+
+  return GROUPS[grp]
+    .map(code => ({ code, ...stat[code], gd: stat[code].gf - stat[code].ga }))
+    .sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.code.localeCompare(b.code));
+}
+
+/* ============================================================
+   FORMAT DATE
+============================================================ */
+const DOW = ['日','月','火','水','木','金','土'];
+function fmtDate(mmdd, time) {
+  const [m, d] = mmdd.split('-').map(Number);
+  const date = new Date(2026, m - 1, d);
+  return `${m}/${d}(${DOW[date.getDay()]}) ${time}`;
+}
+
+/* ============================================================
+   BUILD GROUP CARDS
+============================================================ */
+const grid = document.getElementById('groups-grid');
+
+Object.keys(GROUPS).forEach(grp => {
+  const isJapan = grp === 'F';
+  const standings = calcStandings(grp);
+  const groupMatches = MATCHES.filter(m => m.grp === grp);
+  const played = groupMatches.filter(m => m.hs !== null).length;
+
+  /* Card */
+  const card = document.createElement('div');
+  card.className = 'group-card' + (isJapan ? ' japan-group' : '');
+
+  /* Header */
+  const teamNames = GROUPS[grp].map(t => TEAMS[t].name).join('／');
+  card.innerHTML = `
+    <div class="group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div class="group-label">${grp}</div>
+      <div class="group-teams-label">${teamNames}</div>
+      <div class="group-toggle">▼</div>
+    </div>
+    <div class="group-body">
+      ${buildStandingsTable(standings, played)}
+      ${buildMatchRows(groupMatches, grp)}
+    </div>`;
+
+  grid.appendChild(card);
+});
+
+function buildStandingsTable(standings, played) {
+  let rows = '';
+  standings.forEach((s, i) => {
+    const t = TEAMS[s.code];
+    const isJPN = s.code === 'JPN';
+    const qualClass = played >= 2 && i < 2 ? 'qualify' : played >= 1 && i < 3 ? 'potential' : '';
+    const jpnClass  = isJPN ? 'japan-team' : '';
+    const gdStr = s.gd > 0 ? `+${s.gd}` : `${s.gd}`;
+    const gdClass = s.gd > 0 ? 'pos' : s.gd < 0 ? 'neg' : '';
+    rows += `
+      <tr class="${qualClass} ${jpnClass}">
+        <td><div class="team-cell"><span class="rank-num">${i+1}</span>${t.flag} ${t.name}</div></td>
+        <td>${s.gp}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td>
+        <td>${s.gf}</td><td>${s.ga}</td>
+        <td class="gd-cell ${gdClass}">${s.gp > 0 ? gdStr : '—'}</td>
+        <td class="pts-cell">${s.pts}</td>
+      </tr>`;
+  });
+  return `
+    <table class="standings-table">
+      <thead>
+        <tr>
+          <th class="team-col">チーム</th>
+          <th title="試合数">試</th><th title="勝">勝</th><th title="分">分</th><th title="負">負</th>
+          <th title="得点">得</th><th title="失点">失</th><th title="得失点差">差</th>
+          <th title="勝点">勝点</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function buildMatchRows(matches, grp) {
+  let html = '<div class="matches-section">';
+  let curMd = 0;
+
+  matches.forEach(m => {
+    if (m.md !== curMd) {
+      curMd = m.md;
+      html += `<div class="md-label">第${m.md}節</div>`;
+    }
+
+    const h = TEAMS[m.home], a = TEAMS[m.away];
+    const played = m.hs !== null && m.as !== null;
+    const isJapanMatch = m.home === 'JPN' || m.away === 'JPN';
+    const scoreText = played ? `${m.hs} - ${m.as}` : '--:--';
+    const scoreClass = played ? 'played' : '';
+
+    let badge = '';
+    if (isJapanMatch && played) {
+      const jpnIsHome = m.home === 'JPN';
+      const jpnScore  = jpnIsHome ? m.hs : m.as;
+      const oppScore  = jpnIsHome ? m.as : m.hs;
+      if (jpnScore > oppScore)       badge = '<span class="result-badge w">W</span>';
+      else if (jpnScore < oppScore)  badge = '<span class="result-badge l">L</span>';
+      else                           badge = '<span class="result-badge d">D</span>';
+    }
+
+    html += `
+      <div class="match-row ${isJapanMatch ? 'japan-match' : ''}">
+        <div class="match-date">${fmtDate(m.date, m.time)}</div>
+        <div class="match-home">${h.flag} ${h.name}</div>
+        <div class="match-score ${scoreClass}">${scoreText}</div>
+        <div class="match-away">${a.name} ${a.flag}</div>
+        ${badge}
+      </div>`;
+  });
+
+  html += '</div>';
+  return html;
+}
+</script>
+</body>
+</html>
