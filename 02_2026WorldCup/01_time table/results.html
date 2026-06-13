@@ -39,6 +39,14 @@
     header h1 { font-size: 22px; font-weight: 800; position: relative; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
     header .subtitle { font-size: 12px; opacity: 0.85; margin-top: 4px; position: relative; }
 
+    /* ===== STICKY HEADER ===== */
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+
     /* ===== TAB NAV ===== */
     .tab-nav {
       background: #0d2547;
@@ -210,12 +218,14 @@
   <div class="subtitle">グループリーグ 結果・順位表（日本時間）</div>
 </header>
 
+<div class="sticky-top">
 <nav class="tab-nav">
   <a href="schedule.html">📋 日程表</a>
   <a href="calendar.html">📅 カレンダー</a>
   <a href="results.html" class="active">📊 結果・順位</a>
   <a href="bracket.html">🏆 トーナメント表</a>
 </nav>
+</div>
 
 <div class="japan-banner">
   🇯🇵 日本 グループF ／ <strong>6/15(月) 5:00</strong> オランダ戦　<strong>6/21(日) 13:00</strong> チュニジア戦　<strong>6/26(金) 8:00</strong> スウェーデン戦

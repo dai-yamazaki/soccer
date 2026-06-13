@@ -32,6 +32,7 @@
     header h1 { font-size: 24px; font-weight: 800; letter-spacing: 0.04em; position: relative; text-shadow: 0 2px 12px rgba(0,0,0,0.5); }
     header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; position: relative; text-shadow: 0 1px 6px rgba(0,0,0,0.4); }
 
+    .sticky-top { position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
     .tab-nav { background: #0d2547; display: flex; justify-content: center; gap: 4px; padding: 0 20px; }
     .tab-nav a { display: inline-block; padding: 10px 28px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 13px; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; }
     @media (max-width: 768px) {
@@ -153,12 +154,14 @@
   <div class="subtitle">トーナメント表（ラウンド32〜決勝）日本時間</div>
 </header>
 
+<div class="sticky-top">
 <nav class="tab-nav">
   <a href="schedule.html">📋 日程表</a>
   <a href="calendar.html">📅 カレンダー</a>
   <a href="results.html">📊 結果・順位</a>
   <a href="bracket.html" class="active">🏆 トーナメント表</a>
 </nav>
+</div>
 
 <main>
   <div class="info-bar" id="info-bar"></div>

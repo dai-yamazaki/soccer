@@ -73,6 +73,14 @@
       font-size: 12px;
     }
 
+    /* ===== STICKY HEADER ===== */
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+
     /* ===== TAB NAV ===== */
     .tab-nav {
       background: #0d2547;
@@ -399,12 +407,14 @@
   </div>
 </header>
 
+<div class="sticky-top">
 <nav class="tab-nav">
   <a href="schedule.html" class="active">📋 日程表</a>
   <a href="calendar.html">📅 カレンダー</a>
   <a href="results.html">📊 結果・順位</a>
   <a href="bracket.html">🏆 トーナメント表</a>
 </nav>
+</div>
 
 <!-- JAPAN HIGHLIGHT -->
 <div class="japan-section">
