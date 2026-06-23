@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 FIFAワールドカップ 優勝予想</title>
+<style>
+  :root {
+    --primary: #1a3a6c;
+    --japan:   #bc002d;
+    --gold:    #f0b429;
+    --bg:      #f0f2f8;
+    --card:    #fff;
+    --border:  #d0d7e8;
+    --text:    #1a1a2e;
+    --muted:   #64748b;
+    --up:      #16a34a;
+    --down:    #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    background: var(--bg); color: var(--text); font-size: 13px;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, #0d2547 100%);
+    color: white; padding: 22px 20px 16px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='28' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-opacity='0.07'/%3E%3C/svg%3E") repeat;
+  }
+  header h1 { font-size: 22px; font-weight: 800; position: relative; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+  header .subtitle { font-size: 12px; opacity: 0.85; margin-top: 4px; position: relative; }
+
+  .sticky-top { position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+  .tab-nav { background: #0d2547; display: flex; justify-content: center; gap: 4px; }
+  .tab-nav a {
+    display: inline-block; padding: 10px 20px;
+    color: rgba(255,255,255,0.65); text-decoration: none;
+    font-size: 13px; font-weight: 600; border-bottom: 3px solid transparent;
+    white-space: nowrap; transition: all 0.15s;
+  }
+  .tab-nav a:hover { color: white; }
+  .tab-nav a.active { color: white; border-bottom-color: var(--gold); }
+  @media (max-width: 700px) {
+    .tab-nav { gap: 0; }
+    .tab-nav a { flex: 1; text-align: center; padding: 9px 3px; font-size: 10px; }
+  }
+
+  main { max-width: 920px; margin: 0 auto; padding: 16px 14px 48px; }
+
+  .note-box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 18px; font-size: 12px; color: var(--muted); line-height: 1.7;
+  }
+  .note-box b { color: var(--text); }
+
+  .section-title {
+    font-size: 13px; font-weight: 800; color: var(--primary);
+    margin: 26px 0 10px; padding-bottom: 6px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* ===== RANKING TABLE ===== */
+  .rank-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .rank-table th {
+    background: var(--primary); color: white; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 9px 8px; text-align: left;
+  }
+  .rank-table th.center, .rank-table td.center { text-align: center; }
+  .rank-table td { padding: 10px 8px; border-bottom: 1px solid #f0f3fa; vertical-align: top; font-size: 12.5px; }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table tr:hover td { background: #f7f9fd; }
+
+  .rank-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #eef1f8; color: var(--primary); font-weight: 800; font-size: 11px;
+  }
+  .rank-num.top3 { background: var(--gold); color: #5c3d00; }
+
+  .team-name { font-weight: 700; font-size: 13.5px; }
+  .prob-bar-wrap { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+  .prob-bar-bg { flex: 1; height: 8px; background: #e7ebf5; border-radius: 5px; overflow: hidden; }
+  .prob-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #d6920f); border-radius: 5px; }
+  .prob-pct { font-weight: 800; color: var(--primary); font-size: 12.5px; min-width: 40px; text-align: right; }
+  .reason-cell { color: var(--muted); font-size: 11.5px; line-height: 1.6; }
+
+  /* ===== JAPAN CARD ===== */
+  .japan-card {
+    background: var(--card); border: 1px solid var(--japan);
+    box-shadow: 0 0 0 2px rgba(188,0,45,0.12);
+    border-radius: 12px; overflow: hidden; margin-top: 8px;
+  }
+  .japan-card .jc-header {
+    background: linear-gradient(90deg, var(--japan), #8b0021); color: white;
+    padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+  }
+  .japan-card .jc-flag { font-size: 26px; }
+  .japan-card .jc-title { font-size: 15px; font-weight: 800; }
+  .japan-card .jc-rank { font-size: 11px; opacity: 0.9; margin-top: 2px; }
+  .japan-card .jc-prob {
+    margin-left: auto; text-align: right; font-size: 22px; font-weight: 800; color: var(--gold);
+  }
+  .japan-card .jc-prob span { display: block; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.8); }
+  .japan-card .jc-body { padding: 14px 16px; }
+  .jc-list { list-style: none; }
+  .jc-list li {
+    padding: 8px 0; border-bottom: 1px solid #f5f5f8; font-size: 12.5px; line-height: 1.7;
+    display: flex; gap: 8px;
+  }
+  .jc-list li:last-child { border-bottom: none; }
+  .jc-list .bullet { color: var(--japan); font-weight: 800; flex-shrink: 0; }
+
+  .bracket-path {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 11.5px;
+  }
+  .bp-step {
+    background: #f0f4fb; border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 10px; font-weight: 700; color: var(--primary); white-space: nowrap;
+  }
+  .bp-step.win { background: #dcfce7; border-color: #86efac; color: #166534; }
+  .bp-step.hard { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+  .bp-arrow { color: var(--muted); font-weight: 800; }
+
+  /* ===== HALF SUMMARY ===== */
+  .half-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 600px) { .half-grid { grid-template-columns: 1fr; } }
+  .half-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .half-card h4 { font-size: 12px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+  .half-card p { font-size: 11.5px; color: var(--muted); line-height: 1.7; }
+
+  footer {
+    text-align: center; padding: 14px; font-size: 10.5px; color: var(--muted);
+    border-top: 1px solid var(--border); margin-top: 24px;
+  }
+  .src-list { font-size: 10.5px; color: var(--muted); line-height: 1.8; margin-top: 6px; }
+  .src-list a { color: var(--primary); text-decoration: none; }
+  .src-list a:hover { text-decoration: underline; }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 600px) {
+    body { font-size: 12.5px; }
+    header { padding: 18px 14px 14px; }
+    header h1 { font-size: 18px; }
+    header .subtitle { font-size: 11px; }
+    main { padding: 12px 8px 40px; }
+    .section-title { font-size: 12px; margin: 20px 0 8px; }
+
+    /* table -> stacked cards */
+    .rank-table thead { display: none; }
+    .rank-table, .rank-table tbody { display: block; width: 100%; }
+    .rank-table tr {
+      display: flex; flex-wrap: wrap; align-items: center;
+      padding: 10px 12px; border-bottom: 1px solid #f0f3fa;
+    }
+    .rank-table tr:last-child { border-bottom: none; }
+    .rank-table td { display: block; border-bottom: none; padding: 3px 0; }
+    .rank-table td.center { order: 1; flex: 0 0 auto; padding-right: 8px; }
+    .rank-table td.team-name { order: 2; flex: 1; min-width: 0; font-size: 13px; }
+    .rank-table td.prob-cell { order: 3; width: 100%; margin-top: 6px; }
+    .rank-table td.reason-cell { order: 4; width: 100%; margin-top: 4px; font-size: 11px; }
+    .prob-bar-wrap { min-width: 0; }
+
+    /* japan card */
+    .japan-card .jc-header { flex-wrap: wrap; }
+    .japan-card .jc-rank { font-size: 10px; }
+    .japan-card .jc-prob {
+      margin-left: 0; width: 100%; text-align: left; margin-top: 8px;
+      display: flex; align-items: baseline; gap: 6px; font-size: 19px;
+    }
+    .japan-card .jc-prob span { display: inline; font-size: 9px; }
+    .jc-list li { font-size: 11.5px; }
+
+    .bracket-path { font-size: 10.5px; }
+    .bp-step { white-space: normal; padding: 5px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔮 2026 FIFA World Cup 優勝予想</h1>
+  <div class="subtitle">グループステージ結果・直近1年の成績・トーナメント相性から予想（2026/6/20時点）</div>
+</header>
+
+<div class="sticky-top">
+<nav class="tab-nav">
+  <a href="schedule.html">📋 グループ</a>
+  <a href="calendar.html">📅 カレンダー</a>
+  <a href="results.html">📊 結果・順位</a>
+  <a href="bracket.html">🏆 トーナメント表</a>
+  <a href="prediction.html" class="active">🔮 優勝予想</a>
+</nav>
+</div>
+
+<main>
+
+  <div class="note-box">
+    <b>予想の前提：</b> ブックメーカー各社の優勝オッズ、最新FIFAランキング、グループステージの実際の結果（得失点・勝敗）、トーナメント表の対戦組み合わせ（どちらの山に強豪が集まっているか）を統合した推定値です。厳密な統計モデルではなく、傾向をわかりやすく整理した参考値としてご覧ください。
+  </div>
+
+  <div class="section-title">優勝確率予想 トップ10</div>
+  <table class="rank-table">
+    <thead>
+      <tr>
+        <th class="center" style="width:34px;">順位</th>
+        <th>国</th>
+        <th style="width:160px;">推定優勝確率</th>
+        <th>根拠</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="center"><span class="rank-num top3">1</span></td>
+        <td class="team-name">🇫🇷 フランス</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:89%"></div></div><div class="prob-pct">17%</div></div></td>
+        <td class="reason-cell">開幕セネガル戦3-1快勝。総合力は大会随一だが、トーナメント下半分にイングランド・アルゼンチンも同居し早期激突の可能性</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num top3">2</span></td>
+        <td class="team-name">🇪🇸 スペイン</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:84%"></div></div><div class="prob-pct">16%</div></div></td>
+        <td class="reason-cell">EURO2024王者・ランク上位の最強世代。ただし開幕カーボベルデ戦0-0で自国グループ4位発進と不安要素</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num top3">3</span></td>
+        <td class="team-name"><svg width="18" height="12" viewBox="0 0 60 36" style="vertical-align:middle;margin-right:4px;border:1px solid #d0d7e8;"><rect width="60" height="36" fill="#fff"/><rect x="24" width="12" height="36" fill="#ce1124"/><rect y="12" width="60" height="12" fill="#ce1124"/></svg> イングランド</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:58%"></div></div><div class="prob-pct">11%</div></div></td>
+        <td class="reason-cell">クロアチアに4-2快勝の好スタート。EURO2024準優勝の勢い継続中</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num">4</span></td>
+        <td class="team-name">🇦🇷 アルゼンチン</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:53%"></div></div><div class="prob-pct">10%</div></div></td>
+        <td class="reason-cell">現FIFAランク1位（W杯・コパアメリカ連覇）。アルジェリア戦3-0。準決勝までは比較的順当な組み合わせ</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num">5</span></td>
+        <td class="team-name">🇧🇷 ブラジル</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:42%"></div></div><div class="prob-pct">8%</div></div></td>
+        <td class="reason-cell">モロッコと1-1で出ばな停滞。準々決勝でドイツとの激突が濃厚な「死の上半分」に位置</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num">6</span></td>
+        <td class="team-name">🇵🇹 ポルトガル</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:32%"></div></div><div class="prob-pct">6%</div></div></td>
+        <td class="reason-cell">コンゴ民主と1-1でグループ3位発進。ロナウド最後のW杯だが、準々決勝までの山は比較的緩やか</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num">7</span></td>
+        <td class="team-name">🇳🇱 オランダ</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:27%"></div></div><div class="prob-pct">5%</div></div></td>
+        <td class="reason-cell">日本と2-2で自グループ3位と出ばな不振。守備に不安、フランスと早期対戦の可能性</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num">8</span></td>
+        <td class="team-name">🇩🇪 ドイツ</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:27%"></div></div><div class="prob-pct">5%</div></div></td>
+        <td class="reason-cell">キュラソーに7-1快勝と好調。ブラジルとの準々決勝級対決が濃厚な激戦区に位置</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num">9</span></td>
+        <td class="team-name">🇧🇪 ベルギー</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:16%"></div></div><div class="prob-pct">3%</div></div></td>
+        <td class="reason-cell">エジプトと1-1。黄金世代後期で安定感はあるが優勝経験国との比較では一段落ちる</td>
+      </tr>
+      <tr>
+        <td class="center"><span class="rank-num">10</span></td>
+        <td class="team-name">🇲🇦 モロッコ</td>
+        <td class="prob-cell"><div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:13%"></div></div><div class="prob-pct">2.5%</div></div></td>
+        <td class="reason-cell">ブラジルと1-1の好発進。2022年4位の実績ある大会随一のダークホース</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note-box" style="margin-top:10px;">※コロンビア・ウルグアイ・クロアチアもこのレンジに近い実力と評価されています。</div>
+
+  <div class="section-title">🇯🇵 日本の優勝確率</div>
+  <div class="japan-card">
+    <div class="jc-header">
+      <div class="jc-flag">🇯🇵</div>
+      <div>
+        <div class="jc-title">日本代表</div>
+        <div class="jc-rank">全48カ国中 12〜13番手（実勢オッズ約51倍）</div>
+      </div>
+      <div class="jc-prob">0.1〜0.3%<span>推定優勝確率</span></div>
+    </div>
+    <div class="jc-body">
+      <ul class="jc-list">
+        <li><span class="bullet">●</span><div><b>直近1年の成績は良好：</b>2025年10月、ブラジルへ14回目の対戦で史上初勝利（3-2）。東アジアE-1選手権は全勝。アジア最終予選も着実に突破し、森保監督のもとチームは安定。</div></li>
+        <li><span class="bullet">●</span><div><b>グループステージ：</b>初戦オランダと2-2の好発進。チュニジア戦・スウェーデン戦の結果次第で2位通過の可能性が高い。</div></li>
+        <li><span class="bullet">●</span><div><b>トーナメントの相性が最大の鍵（想定変更）：</b>グループCはブラジル・モロッコが上位2枠を占める可能性が高く、ラウンド32の相手はスコットランドではなくブラジルかモロッコ想定に変更。いずれもスコットランドより格上で、初戦から苦しい一戦になる。</div></li>
+        <li><span class="bullet">●</span><div><b>1位通過でも厳しさは変わらない：</b>1位通過した場合はグループC2位（=ブラジルかモロッコの一方）と当たり、その後ドイツ（グループE1位）が控える。2位通過でも1位通過でも、ラウンド32からブラジル・モロッコ級の難敵を避けられない組み合わせになった。</div></li>
+        <li><span class="bullet">●</span><div><b>歴史的な実績：</b>W杯通算最高はベスト16（2002・2010・2018・2022）。優勝は統計的・歴史的にも極めて低い確率帯にとどまる。</div></li>
+      </ul>
+
+      <div class="bracket-path">
+        <div class="bp-step">グループ2位通過想定</div>
+        <div class="bp-arrow">→</div>
+        <div class="bp-step hard">R32: ブラジル or モロッコ想定（苦戦必至）</div>
+        <div class="bp-arrow">→</div>
+        <div class="bp-step hard">R16: フランス想定（最大の壁）</div>
+        <div class="bp-arrow">→</div>
+        <div class="bp-step">QF進出できれば大成功</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">トーナメント表の「山」分析</div>
+  <div class="half-grid">
+    <div class="half-card">
+      <h4>上半分（死の山）</h4>
+      <p>ドイツ・ブラジル・ポルトガル・スウェーデン・ノルウェー・USA・ウルグアイなど。準々決勝でドイツ×ブラジルの激突が濃厚で、強豪同士が早期に潰し合う構図。</p>
+    </div>
+    <div class="half-card">
+      <h4>下半分（混戦の山）</h4>
+      <p>フランス・イングランド・アルゼンチン・オランダ・メキシコ・コロンビアなど。フランス×イングランドが準々決勝級、フランス×アルゼンチンが2022年決勝の再戦として準決勝で実現する可能性。日本もこの山（グループF）に所属。</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  2026 FIFA World Cup 優勝予想｜推定値はブックメーカーオッズ・FIFAランキング・実際の試合結果を基にした参考予想です
+  <div class="src-list">
+    出典：
+    <a href="https://www.foxsports.com/stories/soccer/world-cup-2026-champion-odds" target="_blank">FOX Sports</a> /
+    <a href="https://www.cbssports.com/betting/news/world-cup-odds/" target="_blank">CBS Sports</a> /
+    <a href="https://www.espn.com/soccer/story/_/id/46664763/fifa-mens-top-50-world-rankings" target="_blank">ESPN（FIFAランキング）</a> /
+    <a href="https://starwingblog.com/world-cup-2026-winning-odds-ranking/" target="_blank">サッカー脳</a> /
+    <a href="https://lemino.docomo.ne.jp/leminonews/articles/japan-national-team-schedule" target="_blank">Lemino（日本代表）</a>
+  </div>
+</footer>
+
+</body>
+</html>
