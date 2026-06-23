@@ -74,6 +74,12 @@
     }
     .match-box:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.12); border-color: #8fa8cc; }
     .match-box.final-box { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(240,180,41,0.3); }
+    .match-box.third-box { border-color: #93c5fd; }
+    .match-box.third-box .match-hdr { background: #eff6ff; border-color: #bfdbfe; }
+    .third-label {
+      position: absolute; font-size: 9px; font-weight: 700; color: #1e40af;
+      white-space: nowrap;
+    }
 
     /* Header row inside match box */
     .match-hdr {
@@ -120,30 +126,6 @@
     .round-header .rh-label { font-size: 11px; }
     .round-header .rh-date  { font-size: 10px; opacity: 0.85; margin-top: 1px; }
 
-    /* Bottom section */
-    .bottom-section { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; }
-
-    .extra-card {
-      background: white; border: 1px solid var(--border); border-radius: 12px;
-      padding: 14px 16px; display: flex; align-items: flex-start; gap: 16px;
-    }
-    .extra-card.third-card { border-color: #93c5fd; }
-    .extra-card.final-card { background: linear-gradient(135deg,#fffbeb,#fef3c7); border-color: var(--gold); }
-
-    .extra-label { white-space: nowrap; }
-    .extra-label .el-title { font-size: 14px; font-weight: 800; color: var(--primary); }
-    .extra-card.third-card .el-title { color: #1e40af; }
-    .extra-card.final-card .el-title { color: #92400e; }
-    .extra-label .el-date { font-size: 11px; color: var(--muted); margin-top: 3px; }
-    .extra-label .el-venue { font-size: 10px; color: #94a3b8; margin-top: 2px; }
-
-    .extra-teams {
-      display: flex; flex-direction: column;
-      background: white; border: 1px solid #e2e8f4; border-radius: 6px;
-      overflow: hidden; min-width: 200px;
-    }
-    .extra-teams .team-slot { height: 26px; font-size: 11px; }
-
     footer { text-align: center; padding: 16px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 12px; }
   </style>
 </head>
@@ -176,26 +158,6 @@
   <div class="bracket-scroll">
     <div id="bracket-area">
       <svg id="bracket-svg" style="position:absolute;top:0;left:0;pointer-events:none;overflow:visible;"></svg>
-    </div>
-  </div>
-
-  <!-- 3rd place + Final info -->
-  <div class="bottom-section">
-    <div class="extra-card third-card">
-      <div class="extra-label">
-        <div class="el-title">🥉 3位決定戦</div>
-        <div class="el-date">M103｜7/19(日) 6:00 JST</div>
-        <div class="el-venue">Hard Rock Stadium（マイアミ）</div>
-      </div>
-      <div class="extra-teams" id="third-teams"></div>
-    </div>
-    <div class="extra-card final-card">
-      <div class="extra-label">
-        <div class="el-title">🏆 決　勝</div>
-        <div class="el-date">M104｜7/20(月) 4:00 JST</div>
-        <div class="el-venue">MetLife Stadium（ニュージャージー）</div>
-      </div>
-      <div class="extra-teams" id="final-teams"></div>
     </div>
   </div>
 </main>
@@ -266,12 +228,28 @@ const SF = [
 const FINAL_MATCH = { num:104, date:'7/20(月)', time:'4:00', slots:[{lbl:'M101 勝者'},{lbl:'M102 勝者'}] };
 const THIRD_MATCH = { num:103, date:'7/19(日)', time:'6:00', slots:[{lbl:'M101 敗者（SF1）'},{lbl:'M102 敗者（SF2）'}] };
 
-const ALL_ROUNDS = [
-  { data: R32, label:'ラウンド32', date:'6/29〜7/4',  color:'#475569' },
-  { data: R16, label:'ラウンド16', date:'7/5〜7/8',   color:'#334155' },
-  { data: QF,  label:'準々決勝',   date:'7/10〜7/12', color:'#6d28d9' },
-  { data: SF,  label:'準決勝',     date:'7/15〜7/16', color:'#b45309' },
-  { data: [FINAL_MATCH], label:'決　勝', date:'7/20 4:00 JST', color:'#92400e', isFinal:true },
+/* ============================================================
+   COLUMN LAYOUT — 9 columns, two mountains converging on the Final
+   0:R32L 1:R16L 2:QFL 3:SFL | 4:FINAL | 5:SFR 6:QFR 7:R16R 8:R32R
+============================================================ */
+const COLS = [
+  { data: R32.slice(0, 8),  label:'ラウンド32', date:'6/29〜7/4',  color:'#475569' },
+  { data: R16.slice(0, 4),  label:'ラウンド16', date:'7/5〜7/8',   color:'#334155' },
+  { data: QF.slice(0, 2),   label:'準々決勝',   date:'7/10〜7/12', color:'#6d28d9' },
+  { data: SF.slice(0, 1),   label:'準決勝',     date:'7/15〜7/16', color:'#b45309' },
+  { data: [FINAL_MATCH],    label:'決　勝',     date:'7/20 4:00',  color:'#92400e', isFinal:true },
+  { data: SF.slice(1, 2),   label:'準決勝',     date:'7/15〜7/16', color:'#b45309' },
+  { data: QF.slice(2, 4),   label:'準々決勝',   date:'7/10〜7/12', color:'#6d28d9' },
+  { data: R16.slice(4, 8),  label:'ラウンド16', date:'7/5〜7/8',   color:'#334155' },
+  { data: R32.slice(8, 16), label:'ラウンド32', date:'6/29〜7/4',  color:'#475569' },
+];
+
+const ROUND_LEGEND = [
+  { label:'ラウンド32', date:'6/29〜7/4',  color:'#475569' },
+  { label:'ラウンド16', date:'7/5〜7/8',   color:'#334155' },
+  { label:'準々決勝',   date:'7/10〜7/12', color:'#6d28d9' },
+  { label:'準決勝',     date:'7/15〜7/16', color:'#b45309' },
+  { label:'決　勝',     date:'7/20 4:00 JST', color:'#92400e' },
 ];
 
 /* ============================================================
@@ -283,18 +261,17 @@ const MATCH_H    = 62;   // 16px hdr + 23px × 2 slots
 const SLOT_H     = (MATCH_H - 16) / 2;
 const MATCH_W    = 178;
 const COL_GAP    = 50;
-const BRACKET_H  = 16 * 70; // 1120px
+const BRACKET_H  = 8 * 70; // 560px (8 = matches per side in R32)
 const TOP        = HEADER_H + HEADER_GAP;
-const TOTAL_W    = ALL_ROUNDS.length * MATCH_W + (ALL_ROUNDS.length - 1) * COL_GAP + 4;
+const TOTAL_W    = COLS.length * MATCH_W + (COLS.length - 1) * COL_GAP + 4;
 const TOTAL_H    = TOP + BRACKET_H + 16;
 
-function colX(rIdx)         { return rIdx * (MATCH_W + COL_GAP); }
-function matchY(rIdx, mIdx) {
-  const count  = ALL_ROUNDS[rIdx].data.length;
-  const slotH  = BRACKET_H / count;
+function colX(cIdx) { return cIdx * (MATCH_W + COL_GAP); }
+function matchY(count, mIdx) {
+  const slotH = BRACKET_H / count;
   return TOP + mIdx * slotH + (slotH - MATCH_H) / 2;
 }
-function matchCY(rIdx, mIdx){ return matchY(rIdx, mIdx) + MATCH_H / 2; }
+function matchCY(count, mIdx) { return matchY(count, mIdx) + MATCH_H / 2; }
 
 /* ============================================================
    SETUP
@@ -315,12 +292,15 @@ function svgLine(x1,y1,x2,y2, stroke='#c8d4e8', w=1.5) {
   el.setAttribute('stroke-linecap','round');
   svg.appendChild(el);
 }
+function connColor(depth) {
+  return { lc: depth >= 2 ? '#a78bfa' : depth >= 1 ? '#94a3b8' : '#c8d4e8', lw: depth >= 3 ? 2.0 : 1.5 };
+}
 
 /* ============================================================
    INFO BAR (legend)
 ============================================================ */
 const infoBar = document.getElementById('info-bar');
-ALL_ROUNDS.forEach(r => {
+ROUND_LEGEND.forEach(r => {
   const chip = document.createElement('div');
   chip.className = 'info-chip';
   chip.style.background = r.color;
@@ -371,74 +351,108 @@ function makeSlotHtml(slot, slotHeight) {
 /* ============================================================
    BUILD ROUND HEADERS + MATCH BOXES
 ============================================================ */
-ALL_ROUNDS.forEach((round, rIdx) => {
-  const x = colX(rIdx);
-  const color = round.color;
+function buildBox(match, x, y, extraClass) {
+  const box = document.createElement('div');
+  box.className = 'match-box' + (extraClass ? ' ' + extraClass : '');
+  box.style.cssText = `left:${x}px;top:${y}px;width:${MATCH_W}px;height:${MATCH_H}px;`;
+  box.title = `M${match.num} ${match.date} ${match.time} JST${match.venue ? '  ' + match.venue : ''}`;
+
+  const hdrHtml = `<div class="match-hdr">
+    <span class="mh-num">M${match.num}</span>
+    <span class="mh-sep">·</span>
+    <span>${match.date}</span>
+    <span class="mh-time">${match.time} <span style="font-size:8px;font-weight:400;">JST</span></span>
+  </div>`;
+
+  const slotsHtml = match.slots.map(s => makeSlotHtml(s, SLOT_H)).join('');
+  box.innerHTML = hdrHtml + slotsHtml;
+  area.appendChild(box);
+  return box;
+}
+
+COLS.forEach((col, cIdx) => {
+  const x = colX(cIdx);
 
   /* Round header */
   const hdr = document.createElement('div');
   hdr.className = 'round-header';
-  hdr.style.cssText = `left:${x}px;top:0;width:${MATCH_W}px;height:${HEADER_H - 4}px;background:${color};`;
-  hdr.innerHTML = `<div class="rh-label">${round.label}</div><div class="rh-date">${round.date} JST</div>`;
+  hdr.style.cssText = `left:${x}px;top:0;width:${MATCH_W}px;height:${HEADER_H - 4}px;background:${col.color};`;
+  hdr.innerHTML = `<div class="rh-label">${col.label}</div><div class="rh-date">${col.date} JST</div>`;
   area.appendChild(hdr);
 
   /* Match boxes */
-  round.data.forEach((match, mIdx) => {
-    const y = matchY(rIdx, mIdx);
-    const isFinalBox = round.isFinal;
-
-    const box = document.createElement('div');
-    box.className = 'match-box' + (isFinalBox ? ' final-box' : '');
-    box.style.cssText = `left:${x}px;top:${y}px;width:${MATCH_W}px;height:${MATCH_H}px;`;
-    box.title = `M${match.num} ${match.date} ${match.time} JST${match.venue ? '  ' + match.venue : ''}`;
-
-    const hdrHtml = `<div class="match-hdr">
-      <span class="mh-num">M${match.num}</span>
-      <span class="mh-sep">·</span>
-      <span>${match.date}</span>
-      <span class="mh-time">${match.time} <span style="font-size:8px;font-weight:400;">JST</span></span>
-    </div>`;
-
-    const slotsHtml = match.slots.map(s => makeSlotHtml(s, SLOT_H)).join('');
-    box.innerHTML = hdrHtml + slotsHtml;
-    area.appendChild(box);
-
-    /* CONNECTOR LINES (draw when even index) */
-    if (rIdx < ALL_ROUNDS.length - 1 && mIdx % 2 === 0) {
-      const rx     = colX(rIdx) + MATCH_W;
-      const midX   = rx + COL_GAP / 2;
-      const nextX  = colX(rIdx + 1);
-      const topCY  = matchCY(rIdx, mIdx);
-      const botCY  = matchCY(rIdx, mIdx + 1);
-      const midY   = (topCY + botCY) / 2;
-      const nextCY = matchCY(rIdx + 1, mIdx / 2);
-
-      const lc = rIdx >= 2 ? '#a78bfa' : rIdx >= 1 ? '#94a3b8' : '#c8d4e8';
-      const lw = rIdx >= 3 ? 2.0 : 1.5;
-
-      svgLine(rx, topCY, midX, topCY,  lc, lw);
-      svgLine(midX, topCY, midX, botCY, lc, lw);
-      svgLine(rx, botCY, midX, botCY,  lc, lw);
-      svgLine(midX, midY, nextX, nextCY, lc, lw);
-    }
+  col.data.forEach((match, mIdx) => {
+    const y = matchY(col.data.length, mIdx);
+    buildBox(match, x, y, col.isFinal ? 'final-box' : '');
   });
 });
 
 /* ============================================================
-   3RD PLACE & FINAL BOX
+   CONNECTOR LINES
 ============================================================ */
-function buildExtraTeams(containerId, match) {
-  const el = document.getElementById(containerId);
-  match.slots.forEach(s => {
-    const div = document.createElement('div');
-    div.className = 'team-slot';
-    div.style.height = '26px';
-    div.innerHTML = `<span style="color:#94a3b8;font-size:9px;">→</span> ${s.lbl}`;
-    el.appendChild(div);
-  });
+// Left mountain: R32L(0)→R16L(1)→QFL(2)→SFL(3), growing rightward
+for (let i = 0; i < 3; i++) {
+  const src = COLS[i], tgt = COLS[i + 1];
+  const { lc, lw } = connColor(i);
+  for (let k = 0; k < tgt.data.length; k++) {
+    const rx     = colX(i) + MATCH_W;
+    const midX   = rx + COL_GAP / 2;
+    const nextX  = colX(i + 1);
+    const topCY  = matchCY(src.data.length, 2 * k);
+    const botCY  = matchCY(src.data.length, 2 * k + 1);
+    const midY   = (topCY + botCY) / 2;
+    const nextCY = matchCY(tgt.data.length, k);
+    svgLine(rx, topCY, midX, topCY,  lc, lw);
+    svgLine(midX, topCY, midX, botCY, lc, lw);
+    svgLine(rx, botCY, midX, botCY,  lc, lw);
+    svgLine(midX, midY, nextX, nextCY, lc, lw);
+  }
 }
-buildExtraTeams('third-teams', THIRD_MATCH);
-buildExtraTeams('final-teams', FINAL_MATCH);
+// SFL(3) → FINAL(4)
+{
+  const { lc, lw } = connColor(3);
+  const cy = matchCY(1, 0);
+  svgLine(colX(3) + MATCH_W, cy, colX(4), cy, lc, lw);
+}
+// FINAL(4) ← SFR(5)
+{
+  const { lc, lw } = connColor(3);
+  const cy = matchCY(1, 0);
+  svgLine(colX(5), cy, colX(4) + MATCH_W, cy, lc, lw);
+}
+// Right mountain: R32R(8)→R16R(7)→QFR(6)→SFR(5), growing leftward (mirrored)
+for (let i = 8; i > 5; i--) {
+  const src = COLS[i], tgt = COLS[i - 1];
+  const { lc, lw } = connColor(8 - i);
+  for (let k = 0; k < tgt.data.length; k++) {
+    const lx     = colX(i);
+    const midX   = lx - COL_GAP / 2;
+    const nextX  = colX(i - 1) + MATCH_W;
+    const topCY  = matchCY(src.data.length, 2 * k);
+    const botCY  = matchCY(src.data.length, 2 * k + 1);
+    const midY   = (topCY + botCY) / 2;
+    const nextCY = matchCY(tgt.data.length, k);
+    svgLine(lx, topCY, midX, topCY,  lc, lw);
+    svgLine(midX, topCY, midX, botCY, lc, lw);
+    svgLine(lx, botCY, midX, botCY,  lc, lw);
+    svgLine(midX, midY, nextX, nextCY, lc, lw);
+  }
+}
+
+/* ============================================================
+   3RD PLACE BOX (below the Final, no connector line)
+============================================================ */
+const finalY = matchY(1, 0);
+const thirdY = finalY + MATCH_H + 14;
+const thirdX = colX(4);
+
+const thirdLabel = document.createElement('div');
+thirdLabel.className = 'third-label';
+thirdLabel.style.cssText = `left:${thirdX}px;top:${thirdY - 14}px;width:${MATCH_W}px;text-align:center;`;
+thirdLabel.textContent = '🥉 3位決定戦';
+area.appendChild(thirdLabel);
+
+buildBox(THIRD_MATCH, thirdX, thirdY, 'third-box');
 </script>
 </body>
 </html>
