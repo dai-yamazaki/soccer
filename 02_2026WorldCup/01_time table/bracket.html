@@ -149,7 +149,7 @@
 <main>
   <div class="info-bar" id="info-bar"></div>
   <div class="bracket-note" style="margin-bottom:6px;">
-    ⚠️ グループA〜JはMD2終了時点、グループK・LはMD1終了時点の<strong>暫定順位</strong>を反映。3位通過枠（8チーム）は全グループ未実施のため未定。同勝点・得失点差の場合は総得点→FIFAランキング上位を優先。
+    ⚠️ グループA〜CはMD3終了（<strong>確定</strong>）、グループD〜LはMD2終了時点の<strong>暫定順位</strong>を反映。3位通過枠（8チーム）はグループステージ終了後に確定。同勝点・得失点差の場合は総得点→FIFAランキング上位を優先。
   </div>
   <div class="bracket-note" style="margin-bottom:14px;background:#fff0f0;border-color:#bc002d;">
     🇯🇵 日本 グループF ／ 現在<strong style="color:#1a3a6c;">2位</strong>（暫定）。オランダと勝点4・得失点差+4で並ぶが、総得点（NED7 - JPN6）でオランダが上回り2位。<strong>2位通過 → M76</strong>（対C組1位＝ブラジル）
@@ -173,13 +173,13 @@
 ============================================================ */
 const R32 = [
   // Pair 0 → R16: M90
-  { num:73,  date:'6/29(日)', time:'4:00',  venue:'イングルウッド', slots:[{lbl:'🇰🇷 韓国',rank:2},{lbl:'🇨🇭 スイス',rank:2}] },
+  { num:73,  date:'6/29(日)', time:'4:00',  venue:'イングルウッド', slots:[{lbl:'🇿🇦 南アフリカ',rank:2},{lbl:'🇨🇦 カナダ',rank:2}] },
   { num:75,  date:'6/30(月)', time:'10:00', venue:'グアダルーペ',   slots:[{lbl:'🇳🇱 オランダ',rank:1},{lbl:'🇲🇦 モロッコ',rank:2}] },
   // Pair 1 → R16: M89
   { num:74,  date:'6/30(月)', time:'5:30',  venue:'フォックスボロ', slots:[{lbl:'🇩🇪 ドイツ',rank:1},{lbl:'3位 A/B/C/D/F',rank:3}] },
   { num:77,  date:'7/1(火)',  time:'6:00',  venue:'イーストラザフォード', slots:[{lbl:'🇫🇷 フランス',rank:1},{lbl:'3位 C/D/F/G/H',rank:3}] },
   // Pair 2 → R16: M93
-  { num:83,  date:'7/3(木)',  time:'8:00',  venue:'トロント',       slots:[{lbl:'🇵🇹 ポルトガル',rank:2},{lbl:'🇬🇭 ガーナ',rank:2}] },
+  { num:83,  date:'7/3(木)',  time:'8:00',  venue:'トロント',       slots:[{lbl:'🇵🇹 ポルトガル',rank:2},{lbl:'🇭🇷 クロアチア',rank:2}] },
   { num:84,  date:'7/3(木)',  time:'4:00',  venue:'イングルウッド', slots:[{lbl:'🇪🇸 スペイン',rank:1},{lbl:'🇦🇹 オーストリア',rank:2}] },
   // Pair 3 → R16: M94
   { num:81,  date:'7/2(水)',  time:'9:00',  venue:'サンタクララ',   slots:[{lbl:'🇺🇸 アメリカ',rank:1},{lbl:'3位 B/E/F/I/J',rank:3}] },
@@ -194,7 +194,7 @@ const R32 = [
   { num:86,  date:'7/4(金)',  time:'7:00',  venue:'マイアミガーデンズ', slots:[{lbl:'🇦🇷 アルゼンチン',rank:1},{lbl:'🇺🇾 ウルグアイ',rank:2}] },
   { num:88,  date:'7/4(金)',  time:'3:00',  venue:'ダラス',         slots:[{lbl:'🇦🇺 オーストラリア',rank:2},{lbl:'🇮🇷 イラン',rank:2}] },
   // Pair 7 → R16: M96
-  { num:85,  date:'7/3(木)',  time:'12:00', venue:'バンクーバー',   slots:[{lbl:'🇨🇦 カナダ',rank:1},{lbl:'3位 E/F/G/I/J',rank:3}] },
+  { num:85,  date:'7/3(木)',  time:'12:00', venue:'バンクーバー',   slots:[{lbl:'🇨🇭 スイス',rank:1},{lbl:'3位 E/F/G/I/J',rank:3}] },
   { num:87,  date:'7/4(金)',  time:'10:30', venue:'カンザスシティ', slots:[{lbl:'🇨🇴 コロンビア',rank:1},{lbl:'3位 D/E/I/J/L',rank:3}] },
 ];
 
