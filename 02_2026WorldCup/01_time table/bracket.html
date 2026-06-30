@@ -149,10 +149,10 @@
 <main>
   <div class="info-bar" id="info-bar"></div>
   <div class="bracket-note" style="margin-bottom:6px;">
-    ⚠️ グループA〜FはMD3終了（<strong>確定</strong>）、グループG〜LはMD2終了時点の<strong>暫定順位</strong>を反映。3位通過枠（8チーム）はグループステージ終了後に確定。同勝点・得失点差の場合は総得点→FIFAランキング上位を優先。
+    ⚠️ グループA〜L 全グループMD3終了（<strong>確定</strong>）。3位通過8チーム確定済み。ラウンド32が進行中（一部結果反映済み）。同勝点・得失点差の場合は総得点→FIFAランキング上位を優先。
   </div>
   <div class="bracket-note" style="margin-bottom:14px;background:#fff0f0;border-color:#bc002d;">
-    🇯🇵 日本 グループF ／ <strong style="color:#1a3a6c;">2位確定</strong>（勝点5・1勝2分）スウェーデンと1-1ドローでグループ2位通過確定。<strong>2位通過 → M76</strong>（対 🇧🇷 ブラジル）
+    🇯🇵 日本 グループF ／ 2位通過（勝点5・1勝2分）で迎えたM76は<strong style="color:#bc002d;">🇧🇷 ブラジルに1-2で敗れ、ラウンド32で敗退</strong>（6/29）。
   </div>
 
   <div class="bracket-scroll">
@@ -176,37 +176,37 @@ const R32 = [
   { num:73,  date:'6/29(日)', time:'4:00',  venue:'イングルウッド', slots:[{lbl:'🇿🇦 南アフリカ',rank:2},{lbl:'🇨🇦 カナダ',rank:2}] },
   { num:75,  date:'6/30(月)', time:'10:00', venue:'グアダルーペ',   slots:[{lbl:'🇳🇱 オランダ',rank:1},{lbl:'🇲🇦 モロッコ',rank:2}] },
   // Pair 1 → R16: M89
-  { num:74,  date:'6/30(月)', time:'5:30',  venue:'フォックスボロ', slots:[{lbl:'🇩🇪 ドイツ',rank:1},{lbl:'3位 A/B/C/D/F',rank:3}] },
-  { num:77,  date:'7/1(火)',  time:'6:00',  venue:'イーストラザフォード', slots:[{lbl:'🇫🇷 フランス',rank:1},{lbl:'3位 C/D/F/G/H',rank:3}] },
+  { num:74,  date:'6/30(月)', time:'5:30',  venue:'フォックスボロ', slots:[{lbl:'🇩🇪 ドイツ',rank:1},{lbl:'🇵🇾 パラグアイ',rank:3}] },
+  { num:77,  date:'7/1(火)',  time:'6:00',  venue:'イーストラザフォード', slots:[{lbl:'🇫🇷 フランス',rank:1},{lbl:'🇸🇪 スウェーデン',rank:3}] },
   // Pair 2 → R16: M93
   { num:83,  date:'7/3(木)',  time:'8:00',  venue:'トロント',       slots:[{lbl:'🇵🇹 ポルトガル',rank:2},{lbl:'🇭🇷 クロアチア',rank:2}] },
   { num:84,  date:'7/3(木)',  time:'4:00',  venue:'イングルウッド', slots:[{lbl:'🇪🇸 スペイン',rank:1},{lbl:'🇦🇹 オーストリア',rank:2}] },
   // Pair 3 → R16: M94
-  { num:81,  date:'7/2(水)',  time:'9:00',  venue:'サンタクララ',   slots:[{lbl:'🇺🇸 アメリカ',rank:1},{lbl:'3位 B/E/F/I/J',rank:3}] },
-  { num:82,  date:'7/2(水)',  time:'5:00',  venue:'シアトル',       slots:[{lbl:'🇪🇬 エジプト',rank:1},{lbl:'3位 A/E/H/I/J',rank:3}] },
+  { num:81,  date:'7/2(水)',  time:'9:00',  venue:'サンタクララ',   slots:[{lbl:'🇺🇸 アメリカ',rank:1},{lbl:'🇧🇦 ボスニア',rank:3}] },
+  { num:82,  date:'7/2(水)',  time:'5:00',  venue:'シアトル',       slots:[{lbl:'🇧🇪 ベルギー',rank:1},{lbl:'🇸🇳 セネガル',rank:3}] },
   // Pair 4 → R16: M91
   { num:76,  date:'6/30(月)', time:'2:00',  venue:'ヒューストン',   slots:[{lbl:'🇧🇷 ブラジル',rank:1},{lbl:'🇯🇵 日本',rank:2,jpn:true}] },
   { num:78,  date:'7/1(火)',  time:'2:00',  venue:'ダラス',         slots:[{lbl:'🇨🇮 コートジボワール',rank:2},{lbl:'🇳🇴 ノルウェー',rank:2}] },
   // Pair 5 → R16: M92
-  { num:79,  date:'7/1(火)',  time:'10:00', venue:'メキシコシティ', slots:[{lbl:'🇲🇽 メキシコ',rank:1},{lbl:'3位 C/E/F/H/I',rank:3}] },
-  { num:80,  date:'7/2(水)',  time:'1:00',  venue:'アトランタ',     slots:[{lbl:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 イングランド',rank:1},{lbl:'3位 E/H/I/J/K',rank:3}] },
+  { num:79,  date:'7/1(火)',  time:'10:00', venue:'メキシコシティ', slots:[{lbl:'🇲🇽 メキシコ',rank:1},{lbl:'🇪🇨 エクアドル',rank:3}] },
+  { num:80,  date:'7/2(水)',  time:'1:00',  venue:'アトランタ',     slots:[{lbl:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 イングランド',rank:1},{lbl:'🇨🇩 コンゴ民主',rank:3}] },
   // Pair 6 → R16: M95
-  { num:86,  date:'7/4(金)',  time:'7:00',  venue:'マイアミガーデンズ', slots:[{lbl:'🇦🇷 アルゼンチン',rank:1},{lbl:'🇺🇾 ウルグアイ',rank:2}] },
-  { num:88,  date:'7/4(金)',  time:'3:00',  venue:'ダラス',         slots:[{lbl:'🇦🇺 オーストラリア',rank:2},{lbl:'🇮🇷 イラン',rank:2}] },
+  { num:86,  date:'7/4(金)',  time:'7:00',  venue:'マイアミガーデンズ', slots:[{lbl:'🇦🇷 アルゼンチン',rank:1},{lbl:'🇨🇻 カーボベルデ',rank:2}] },
+  { num:88,  date:'7/4(金)',  time:'3:00',  venue:'ダラス',         slots:[{lbl:'🇦🇺 オーストラリア',rank:2},{lbl:'🇪🇬 エジプト',rank:2}] },
   // Pair 7 → R16: M96
-  { num:85,  date:'7/3(木)',  time:'12:00', venue:'バンクーバー',   slots:[{lbl:'🇨🇭 スイス',rank:1},{lbl:'3位 E/F/G/I/J',rank:3}] },
-  { num:87,  date:'7/4(金)',  time:'10:30', venue:'カンザスシティ', slots:[{lbl:'🇨🇴 コロンビア',rank:1},{lbl:'3位 D/E/I/J/L',rank:3}] },
+  { num:85,  date:'7/3(木)',  time:'12:00', venue:'バンクーバー',   slots:[{lbl:'🇨🇭 スイス',rank:1},{lbl:'🇩🇿 アルジェリア',rank:3}] },
+  { num:87,  date:'7/4(金)',  time:'10:30', venue:'カンザスシティ', slots:[{lbl:'🇨🇴 コロンビア',rank:1},{lbl:'🇬🇭 ガーナ',rank:3}] },
 ];
 
 const R16 = [
   // Pair 0 → QF: M97
-  { num:90,  date:'7/5(土)',  time:'2:00',  slots:[{lbl:'M73 勝者'},{lbl:'M75 勝者'}] },
-  { num:89,  date:'7/5(土)',  time:'6:00',  slots:[{lbl:'M74 勝者'},{lbl:'M77 勝者'}] },
+  { num:90,  date:'7/5(土)',  time:'2:00',  slots:[{lbl:'🇨🇦 カナダ'},{lbl:'M75 勝者'}] },
+  { num:89,  date:'7/5(土)',  time:'6:00',  slots:[{lbl:'🇵🇾 パラグアイ'},{lbl:'M77 勝者'}] },
   // Pair 1 → QF: M98
   { num:93,  date:'7/7(月)',  time:'4:00',  slots:[{lbl:'M83 勝者'},{lbl:'M84 勝者'}] },
   { num:94,  date:'7/7(月)',  time:'9:00',  slots:[{lbl:'M81 勝者'},{lbl:'M82 勝者'}] },
   // Pair 2 → QF: M99
-  { num:91,  date:'7/6(日)',  time:'5:00',  slots:[{lbl:'M76 勝者'},{lbl:'M78 勝者'}] },
+  { num:91,  date:'7/6(日)',  time:'5:00',  slots:[{lbl:'🇧🇷 ブラジル'},{lbl:'M78 勝者'}] },
   { num:92,  date:'7/6(日)',  time:'9:00',  slots:[{lbl:'M79 勝者'},{lbl:'M80 勝者'}] },
   // Pair 3 → QF: M100
   { num:95,  date:'7/8(火)',  time:'1:00',  slots:[{lbl:'M86 勝者'},{lbl:'M88 勝者'}] },
